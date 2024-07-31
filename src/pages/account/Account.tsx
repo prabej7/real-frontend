@@ -19,7 +19,7 @@ const Account: React.FC = () => {
   const { userData } = userContext;
   return (
     <>
-      <div className="section flex overflow-clip">
+      <div className="section flex overflow-clip ">
         <MobileNav title="Dashboard" />
       </div>
     </>
