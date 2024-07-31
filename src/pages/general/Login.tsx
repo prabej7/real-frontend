@@ -34,7 +34,10 @@ const Login: React.FC = () => {
   const onSubmit = async (formData: formField) => {
     try {
       setLoading(true);
-      const { data } = await axios.post(`${url}login`, formData);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_URL}login`,
+        formData
+      );
       console.log(data);
       setCookie("token", data.token);
       reset();
