@@ -12,7 +12,6 @@ const useRedirect = (route: string) => {
     (async () => {
       if (cookie.token) {
         const isAuth = await auth(cookie.token);
-        console.log(isAuth);
         if (isAuth) {
           return navigate(`/${route}`);
         }

@@ -7,7 +7,6 @@ const useAuth = () => {
   const auth = async (token: string): Promise<boolean | undefined> => {
     try {
       const response = await axios.post(`${url}auth`, { token: token });
-      console.log(response);
       if (response.status == 200) {
         return true;
       }

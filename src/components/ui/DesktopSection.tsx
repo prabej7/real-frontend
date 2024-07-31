@@ -13,9 +13,18 @@ import Loading from "./Loading";
 interface Props {
   children?: React.ReactNode;
   title?: string;
+  account?: boolean;
+  rooms?: boolean;
+  setting?: boolean;
 }
 
-const DesktopSection: React.FC<Props> = ({ children, title }) => {
+const DesktopSection: React.FC<Props> = ({
+  children,
+  title,
+  account,
+  rooms,
+  setting,
+}) => {
   const [isShow, setShow] = useState<boolean>(true);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   const userdata = useUser();
@@ -34,21 +43,27 @@ const DesktopSection: React.FC<Props> = ({ children, title }) => {
             <div className="mt-6">
               <Link
                 to="/account"
-                className="flex items-center gap-2 hover:pl-3 transition-all"
+                className={`flex items-center gap-2 ${
+                  account ? "pl-3" : "hover:pl-3"
+                }  transition-all`}
               >
                 <MdDashboard className="text-xl" />
                 <p>Dashboard</p>
               </Link>
               <Link
                 to="/account/rooms"
-                className="flex items-center gap-2 hover:pl-3 transition-all"
+                className={`flex items-center gap-2 ${
+                  rooms ? "pl-3" : "hover:pl-3"
+                }  transition-all`}
               >
                 <FaBookmark className="text-" />
                 <p>Rooms</p>
               </Link>
               <Link
                 to="/account/setting"
-                className="flex items-center gap-2 hover:pl-3 transition-all"
+                className={`flex items-center gap-2 ${
+                  setting ? "pl-3" : "hover:pl-3"
+                }  transition-all`}
               >
                 <IoMdSettings className="text-" />
                 <p>Setting</p>
@@ -64,6 +79,10 @@ const DesktopSection: React.FC<Props> = ({ children, title }) => {
                 <p>Logout</p>
               </div>
             </div>
+          </div>
+          <div className="text-black pt-12 pl-12">
+            <h1 className="font-bold text-xl">{title}</h1>
+            <div>{children}</div>
           </div>
         </div>
       </>

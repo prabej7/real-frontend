@@ -1,26 +1,30 @@
 import DesktopSection from "@/components/ui/DesktopSection";
-import Section from "@/components/ui/Section";
-import SideBar, { MobileNav } from "@/components/ui/sideBar";
-import User from "@/constant/types/user";
+import Loading from "@/components/ui/Loading";
+import { MobileNav } from "@/components/ui/sideBar";
 import useRedirect from "@/hooks/useRedirect";
-import { UserContextType, useUserContext } from "@/Provider/Context";
+import useUser from "@/hooks/useUser";
+import { useAppSelector } from "@/Store/hook";
 import { useEffect } from "react";
 
-import { useCookies } from "react-cookie";
-
 const Account: React.FC = () => {
-  const [cookie, setCookie] = useCookies(["token"]);
-  const redirect = useRedirect("account");
-  
-  return (
-    <>
-      <div className="section flex overflow-clip ">
-        <MobileNav title="Dashboard" />
-        <DesktopSection />
+  useRedirect("account");
+  const userData = useUser();
+  const user = useAppSelector((state) => state.user);
+  useEffect(() => {
+    console.log(userData);
+  }, [user]);
+  if (userData) {
+    return (
+      <>
+        <div className="section flex overflow-clip ">
+          <MobileNav title="Dashboard" />
+          <DesktopSection account title="Dashboard"></DesktopSection>
+        </div>
+      </>
+    );
+  }
 
-      </div>
-    </>
-  );
+  return <Loading />;
 };
 
 export default Account;

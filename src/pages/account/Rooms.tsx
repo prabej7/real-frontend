@@ -1,3 +1,4 @@
+import DesktopSection from "@/components/ui/DesktopSection";
 import Section from "@/components/ui/Section";
 import SideBar, { MobileNav } from "@/components/ui/sideBar";
 import useRedirect from "@/hooks/useRedirect";
@@ -17,6 +18,7 @@ const Rooms: React.FC = () => {
     <>
       <div className="section flex overflow-clip">
         <MobileNav title="Rooms" />
+        <DesktopSection rooms title="Rooms"></DesktopSection>
       </div>
     </>
   );
