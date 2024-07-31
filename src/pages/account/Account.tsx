@@ -1,3 +1,4 @@
+import DesktopSection from "@/components/ui/DesktopSection";
 import Section from "@/components/ui/Section";
 import SideBar, { MobileNav } from "@/components/ui/sideBar";
 import User from "@/constant/types/user";
@@ -10,17 +11,13 @@ import { useCookies } from "react-cookie";
 const Account: React.FC = () => {
   const [cookie, setCookie] = useCookies(["token"]);
   const redirect = useRedirect("account");
-  const userContext: UserContextType | null = useUserContext();
-
-  if (!userContext) {
-    return <div>Loading...</div>;
-  }
-
-  const { userData } = userContext;
+  
   return (
     <>
       <div className="section flex overflow-clip ">
         <MobileNav title="Dashboard" />
+        <DesktopSection />
+
       </div>
     </>
   );
