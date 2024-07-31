@@ -8,7 +8,7 @@ module.exports = {
     "./src/**/*.{ts,tsx}",
   ],
   daisyui: {
-    themes: false,
+    themes: ["light"], // or add your custom themes
   },
   prefix: "",
   theme: {
