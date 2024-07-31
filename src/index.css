@@ -11,6 +11,16 @@
   display: none;
 }
 
+.mobile-s {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  .mbl {
+    display: none;
+  }
+}
+
 @media (max-width: 1000px) {
   .sidebar {
     display: none;
@@ -20,8 +30,5 @@
   }
   .mobile-s {
     display: block;
-  }
-  .mbl {
-    padding: 14px 0px 0px 42px;
   }
 }

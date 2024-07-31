@@ -6,10 +6,12 @@ import { IoLogOut } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+
 interface Props {
   children?: React.ReactNode;
   title?: string;
 }
+
 const SideBar: React.FC<Props> = ({ children, title }) => {
   const [isShow, setShow] = useState<boolean>(true);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
@@ -88,45 +90,49 @@ export default SideBar;
 
 interface Props {
   children?: React.ReactNode;
+  title?: string;
 }
 
-export const MobileNav: React.FC<Props> = ({ children }) => {
+export const MobileNav: React.FC<Props> = ({ children, title }) => {
   const [show, setShow] = useState<boolean>(false);
+  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
   return (
     <>
-      <motion.div className="mobile-sidebar" animate={{ x: show ? 0 : -140 }}>
-        <ul className="bg-black h-screen px-6 py-6">
-          <MdMenu
-            className="relative top-[-10px] left-[120px] text-2xl"
-            onClick={() => setShow(!show)}
-          />
-          <Link to="/account" className="text-white ">
-            Dashboard
-          </Link>
-          <li className="text-white">
-            <Link to="/rooms" className="text-white">
-              Rooms
+      <motion.div className="flex mbl" animate={{ x: show ? 0 : -140 }}>
+        <div className="mobile-sidebar w-[27%]">
+          <ul className="bg-black h-screen px-6 py-6">
+            <MdMenu
+              className="relative top-[-10px] left-[120px] text-2xl"
+              onClick={() => setShow(!show)}
+            />
+            <Link to="/account" className="text-white ">
+              Dashboard
             </Link>
-          </li>
-          <li className="text-white">
             <li className="text-white">
-              <Link to="/" className="text-white">
-                Accounts
+              <Link to="/account/rooms" className="text-white">
+                Rooms
               </Link>
             </li>
-          </li>
-          <li className="text-white">
             <li className="text-white">
-              <Link to="/" className="text-white">
-                Logout
-              </Link>
+              <li className="text-white">
+                <Link to="/account/setting" className="text-white">
+                  Accounts
+                </Link>
+              </li>
             </li>
-          </li>
-        </ul>
+            <li className="text-white" onClick={() => removeCookie("token")}>
+              <li className="text-white">
+                <Link to="/login" className="text-white">
+                  Logout
+                </Link>
+              </li>
+            </li>
+          </ul>
+        </div>
+        <div className="w-screen pt-6">
+          <h1 className="text-red-black text-center font-bold">{title}</h1>
+        </div>
       </motion.div>
-      <div className="mt-[14px] ml-12 mobile-s " style={{ display: "none" }}>
-        {children}
-      </div>
     </>
   );
 };

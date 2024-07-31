@@ -1,13 +1,14 @@
+import SideBar from "./sideBar";
+
 interface Props {
   children?: React.ReactNode;
-  title: string;
+  title?: string;
 }
 const Section: React.FC<Props> = ({ children, title }) => {
   return (
     <>
-      <div className="pt-12 pl-6 mbl ">
-        <h1 className=" font-bold">{title}</h1>
-        {children}
+      <div className="section">
+        <SideBar></SideBar>
       </div>
     </>
   );

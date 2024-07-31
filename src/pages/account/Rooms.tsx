@@ -6,7 +6,7 @@ import { UserContextType, useUserContext } from "@/Provider/Context";
 import { useCookies } from "react-cookie";
 
 const Rooms: React.FC = () => {
-  useRedirect("rooms");
+  useRedirect("account/rooms");
   const userContext: UserContextType | null = useUserContext();
 
   if (!userContext) {
@@ -15,10 +15,8 @@ const Rooms: React.FC = () => {
   const { userData } = userContext;
   return (
     <>
-      <div className="section flex">
-        <SideBar />
-        <MobileNav />
-        <Section title="Rooms"></Section>
+      <div className="section flex overflow-clip">
+        <MobileNav title="Rooms" />
       </div>
     </>
   );
