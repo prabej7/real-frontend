@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import { useState } from "react";
@@ -22,6 +23,7 @@ type formField = z.infer<typeof schema>;
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [cookie, setCookie] = useCookies(["token"]);
+  const [show, setShow] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const {
     register,
@@ -72,14 +74,29 @@ const Register: React.FC = () => {
             {errors.email && (
               <p className="text-red-500">{errors.email.message}</p>
             )}
-            <Input
-              placeholder="Password"
-              type="password"
-              {...register("password")}
-            />
-            {errors.password && (
-              <p className="text-red-500">{errors.password.message}</p>
-            )}
+            <div className="relative">
+              <Input
+                placeholder="Password"
+                type={show ? "text" : "password"}
+                {...register("password")}
+              />
+              {show ? (
+                <FaEye
+                  className="absolute top-[10px] right-[15px]"
+                  onClick={() => setShow(false)}
+                />
+              ) : (
+                <FaEyeSlash
+                  className="absolute top-[10px] right-[15px]"
+                  onClick={() => setShow(true)}
+                />
+              )}
+
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+
             <Button disabled={isLoading}>
               {isLoading ? (
                 <span className="loading loading-spinner loading-xs"></span>
