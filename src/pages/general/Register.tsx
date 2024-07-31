@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ const schema = z.object({
 type formField = z.infer<typeof schema>;
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const [cookie, setCookie] = useCookies(["token"]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const {
@@ -38,6 +39,7 @@ const Register: React.FC = () => {
       console.log(data);
       setCookie("token", data.token);
       reset();
+      navigate("/account");
     } catch (e) {
       const error = e as AxiosError;
       if (error.response && error.response.status == 409) {

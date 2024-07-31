@@ -1,12 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdDashboard, MdMenu } from "react-icons/md";
 import { IoMdSettings, IoIosArrowBack } from "react-icons/io";
 import { FaBookmark } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { useState } from "react";
-const SideBar: React.FC = () => {
+import { useCookies } from "react-cookie";
+interface Props {
+  children?: React.ReactNode;
+  title?: string;
+}
+const SideBar: React.FC<Props> = ({ children, title }) => {
   const [isShow, setShow] = useState<boolean>(true);
+  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
+  const navigate = useNavigate();
   return (
     <>
       <motion.div
@@ -45,7 +52,13 @@ const SideBar: React.FC = () => {
                     Accounts
                   </Link>
                 </li>
-                <li className="flex gap-2 text-white cursor-pointer hover:px-3 transition-all">
+                <li
+                  className="flex gap-2 text-white cursor-pointer hover:px-3 transition-all"
+                  onClick={() => {
+                    removeCookie("token");
+                    navigate("/login");
+                  }}
+                >
                   <IoLogOut className="text-2xl" />
                   Logout
                 </li>
@@ -62,6 +75,10 @@ const SideBar: React.FC = () => {
           style={{ display: isShow ? "none" : "block" }}
           onClick={() => setShow(true)}
         />
+        <div className="relative top-[-215px] left-[208px] pt-12 pl-12">
+          <h1 className="font-bold">{title}</h1>
+          {children}
+        </div>
       </motion.div>
     </>
   );
@@ -77,10 +94,7 @@ export const MobileNav: React.FC<Props> = ({ children }) => {
   const [show, setShow] = useState<boolean>(false);
   return (
     <>
-      <motion.div
-        className="mobile-sidebar absolute"
-        animate={{ x: show ? 0 : -140 }}
-      >
+      <motion.div className="mobile-sidebar" animate={{ x: show ? 0 : -140 }}>
         <ul className="bg-black h-screen px-6 py-6">
           <MdMenu
             className="relative top-[-10px] left-[120px] text-2xl"

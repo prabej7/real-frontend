@@ -5,7 +5,7 @@ interface Props {
 const Section: React.FC<Props> = ({ children, title }) => {
   return (
     <>
-      <div className="pt-12 pl-6 mbl">
+      <div className="pt-12 pl-6 mbl ">
         <h1 className=" font-bold">{title}</h1>
         {children}
       </div>

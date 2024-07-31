@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 
 const Account: React.FC = () => {
   const [cookie, setCookie] = useCookies(["token"]);
-  useRedirect();
+  const redirect = useRedirect();
   const userContext: UserContextType | null = useUserContext();
 
   if (!userContext) {
@@ -19,10 +19,9 @@ const Account: React.FC = () => {
   const { userData } = userContext;
   return (
     <>
-      <div className="section flex relative">
-        <SideBar />
+      <div className="section flex ">
+        <SideBar title="Dashboard"></SideBar>
         <MobileNav />
-        <Section title="Dashboard"></Section>
       </div>
     </>
   );

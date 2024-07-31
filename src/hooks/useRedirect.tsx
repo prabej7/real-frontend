@@ -12,11 +12,13 @@ const useRedirect = () => {
     (async () => {
       if (cookie.token) {
         const isAuth = await auth(cookie.token);
+        console.log(isAuth);
         if (isAuth) {
           return navigate("/account");
         }
         return navigate("/login");
       }
+      return navigate("/login");
     })();
   }, []);
 };
