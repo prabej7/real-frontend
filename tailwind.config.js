@@ -7,6 +7,9 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
+  daisyui: {
+    themes: false,
+  },
   prefix: "",
   theme: {
     container: {
@@ -36,8 +39,6 @@ module.exports = {
       },
     },
   },
-  daisyui: {
-    themes: false,
-  },
+
   plugins: [require("tailwindcss-animate"), require("daisyui")],
 };
