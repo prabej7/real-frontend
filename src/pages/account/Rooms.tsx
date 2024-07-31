@@ -6,7 +6,7 @@ import { UserContextType, useUserContext } from "@/Provider/Context";
 import { useCookies } from "react-cookie";
 
 const Rooms: React.FC = () => {
-  useRedirect();
+  useRedirect("rooms");
   const userContext: UserContextType | null = useUserContext();
 
   if (!userContext) {

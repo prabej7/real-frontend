@@ -3,7 +3,7 @@ import useAuth from "./useAuth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const useRedirect = () => {
+const useRedirect = (route: string) => {
   const [cookie, setCookie] = useCookies(["token"]);
   const navigate = useNavigate();
 
@@ -14,7 +14,7 @@ const useRedirect = () => {
         const isAuth = await auth(cookie.token);
         console.log(isAuth);
         if (isAuth) {
-          return navigate("/account");
+          return navigate(`/${route}`);
         }
         return navigate("/login");
       }

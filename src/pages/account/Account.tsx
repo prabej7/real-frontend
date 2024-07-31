@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 
 const Account: React.FC = () => {
   const [cookie, setCookie] = useCookies(["token"]);
-  const redirect = useRedirect();
+  const redirect = useRedirect("account");
   const userContext: UserContextType | null = useUserContext();
 
   if (!userContext) {
