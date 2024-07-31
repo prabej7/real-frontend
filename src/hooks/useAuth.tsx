@@ -1,5 +1,5 @@
 import url from "@/constant/url";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useCookies } from "react-cookie";
 
 const useAuth = () => {
@@ -12,7 +12,8 @@ const useAuth = () => {
       }
       return false;
     } catch (e) {
-      if (e.response.status == 401) {
+      const error = e as AxiosError;
+      if (error.response && error.status == 401) {
         return false;
       }
     }

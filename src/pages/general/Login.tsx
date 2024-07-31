@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import { useState } from "react";
@@ -39,7 +39,8 @@ const Login: React.FC = () => {
       setCookie("token", data.token);
       reset();
     } catch (e) {
-      if (e.response.status == 404) {
+      const error = e as AxiosError;
+      if (error.response && error.response.status == 404) {
         setError("root", { message: "User doesn't exists!" });
       } else {
         setError("root", { message: "Something went wrong!" });

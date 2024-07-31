@@ -1,5 +1,5 @@
 import url from "@/constant/url";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useCookies } from "react-cookie";
 
 const useGetUser = () => {
@@ -9,7 +9,8 @@ const useGetUser = () => {
       const response = await axios.post(`${url}user`, { token: cookie.token });
       return response.data;
     } catch (e) {
-      throw new Error(e.message);
+      const error = e as AxiosError;
+      throw new Error(error.message);
     }
   };
 
