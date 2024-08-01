@@ -6,6 +6,7 @@ import Login from "./pages/general/Login";
 import Account from "./pages/account/Account";
 import Rooms from "./pages/account/Rooms";
 import AccountSetting from "./pages/account/AccountSetting";
+import Verify from "./pages/account/Veriy";
 function App() {
   return (
     <>
@@ -16,6 +17,7 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/account/rooms" element={<Rooms />} />
         <Route path="/account/setting" element={<AccountSetting />} />
+        <Route path="/verify" element={<Verify />} />
       </Routes>
     </>
   );

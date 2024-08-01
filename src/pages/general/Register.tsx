@@ -9,6 +9,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import { useState } from "react";
+import { useAppDispatch } from "@/Store/hook";
+import { setUser } from "@/Store/slices/user";
 const schema = z.object({
   email: z
     .string()
@@ -21,6 +23,7 @@ const schema = z.object({
 type formField = z.infer<typeof schema>;
 
 const Register: React.FC = () => {
+  const dispacth = useAppDispatch();
   const navigate = useNavigate();
   const [cookie, setCookie] = useCookies(["token"]);
   const [show, setShow] = useState<boolean>(false);
@@ -38,8 +41,9 @@ const Register: React.FC = () => {
     try {
       setLoading(true);
       const { data } = await axios.post(`${url}register`, formData);
-      console.log(data);
       setCookie("token", data.token);
+      const response = await axios.post(`${url}user`, { token: data.token });
+      dispacth(setUser(response.data));
       reset();
       navigate("/account");
     } catch (e) {

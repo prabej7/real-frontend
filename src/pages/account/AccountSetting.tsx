@@ -1,13 +1,11 @@
-import { Button } from "@/components/ui/button";
+
 import DesktopSection from "@/components/ui/DesktopSection";
 import DialogBox from "@/components/ui/EditProfile";
-import { Input } from "@/components/ui/input";
 import Loading from "@/components/ui/Loading";
 import { MobileNav } from "@/components/ui/sideBar";
-import useUser from "@/hooks/useUser";
+
 import { useAppSelector } from "@/Store/hook";
 import { ChangeEvent, useState } from "react";
-import { FaEdit } from "react-icons/fa";
 
 const AccountSetting: React.FC = () => {
   const userData = useAppSelector((state) => state.user);

@@ -6,6 +6,7 @@ interface User {
   location?: Location;
   fullName?: string;
   address?: string;
+  isVerified: Boolean;
 }
 
 export default User;
