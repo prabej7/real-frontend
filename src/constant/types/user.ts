@@ -7,6 +7,7 @@ interface User {
   fullName?: string;
   address?: string;
   isVerified: Boolean;
+  avatar?: String;
 }
 
 export default User;

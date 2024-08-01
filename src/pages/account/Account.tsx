@@ -16,7 +16,8 @@ const Account: React.FC = () => {
     <>
       <div className="section flex overflow-clip ">
         <MobileNav title="Dashboard" />
-        <DesktopSection account title="Dashboard"></DesktopSection>
+        <DesktopSection account title="Dashboard">
+        </DesktopSection>
       </div>
     </>
   );

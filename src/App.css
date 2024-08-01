@@ -1,6 +1,6 @@
 .image-container {
-  width: 250px;
-  height: 250px;
+  width: 150px;
+  height: 150px;
   /* You can specify fixed dimensions as well */
 }
 
@@ -13,4 +13,9 @@
 .section {
   height: 100dvh;
   width: 100%;
+}
+
+.circle-frame {
+  border-radius: 100%;
+
 }

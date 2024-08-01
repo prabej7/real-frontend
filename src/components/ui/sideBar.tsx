@@ -129,8 +129,9 @@ export const MobileNav: React.FC<Props> = ({ children, title }) => {
             </li>
           </ul>
         </div>
-        <div className="w-screen pt-6">
+        <div className="w-screen pt-6 px-6">
           <h1 className="text-red-black text-center font-bold">{title}</h1>
+          {children}
         </div>
       </motion.div>
     </>
