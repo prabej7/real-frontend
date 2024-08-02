@@ -7,6 +7,7 @@ import Account from "./pages/account/Account";
 import Rooms from "./pages/account/Rooms";
 import AccountSetting from "./pages/account/AccountSetting";
 import Verify from "./pages/account/Veriy";
+import RoomFullView from "./pages/general/RoomFullView";
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
         <Route path="/account/rooms" element={<Rooms />} />
         <Route path="/account/setting" element={<AccountSetting />} />
         <Route path="/verify" element={<Verify />} />
+        <Route path="rooms/:id" element={<RoomFullView />} />
       </Routes>
     </>
   );

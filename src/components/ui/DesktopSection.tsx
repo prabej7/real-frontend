@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
-import { MdDashboard,  } from "react-icons/md";
-import { IoMdSettings,  } from "react-icons/io";
+import { MdDashboard } from "react-icons/md";
+import { IoMdSettings } from "react-icons/io";
 import { FaBookmark } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { useState } from "react";
@@ -12,6 +12,7 @@ interface Props {
   account?: boolean;
   rooms?: boolean;
   setting?: boolean;
+  isNav?: boolean;
 }
 
 const DesktopSection: React.FC<Props> = ({
@@ -20,6 +21,7 @@ const DesktopSection: React.FC<Props> = ({
   account,
   rooms,
   setting,
+  isNav,
 }) => {
   const [isShow, setShow] = useState<boolean>(true);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
@@ -29,7 +31,10 @@ const DesktopSection: React.FC<Props> = ({
   return (
     <>
       <div className="h-screen w-screen flex text-white">
-        <div className="bg-black w-[20%] px-12 py-12">
+        <div
+          className="bg-black w-[20%]  px-12 py-12"
+          style={{ display: isNav ? "block" : "none" }}
+        >
           <div>
             <p className="">Hi, {"Admin"}</p>
             <p className="text-xs">{}</p>

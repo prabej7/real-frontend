@@ -62,9 +62,11 @@ const Verify: React.FC = () => {
       <div className="h-screen w-screen flex flex-col justify-center items-center">
         <div>
           <h1 className="text-center font-bold">Email Verification!</h1>
-          <p>We have sent you an email at {user.email} with a OPT.</p>
+          <p className="text-center">
+            We have sent you an email at {user.email} with a OPT.
+          </p>
         </div>
-        <div className="flex gap-3 mt-6">
+        <div className="flex gap-3 mt-6 max-md:w-screen px-6">
           <Input placeholder="OPT" onChange={(e) => setOtp(e.target.value)} />
           <Button onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? (
