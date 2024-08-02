@@ -31,7 +31,7 @@ const AccountSetting: React.FC = () => {
         <div className="section flex overflow-x-clip">
           <MobileNav title="Account">
             <div className="flex flex-col gap-3 w-screen ">
-              <div className="flex justify-center mt-6">
+              <div className="flex ml-40 mt-6">
                 <div className="image-container ">
                   <img
                     src={`${user.avatar}`}

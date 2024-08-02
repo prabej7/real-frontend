@@ -10,7 +10,7 @@ const Loading: React.FC<Props> = ({ route }) => {
   const user = useUserContext();
   const navigate = useNavigate();
   useEffect(() => {
-    if (user.email.length > 0) {
+    if (user && user.email.length > 0) {
       navigate(`/${route}`);
     }
   }, [user]);
