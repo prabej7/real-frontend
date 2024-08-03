@@ -7,12 +7,15 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./Store/store.ts";
 import UserContextProvide from "./Provider/UserContext.tsx";
+import RoomProvider from "./Provider/RoomsContext.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <UserContextProvide>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>
+    <RoomProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    </RoomProvider>
   </UserContextProvide>
 );

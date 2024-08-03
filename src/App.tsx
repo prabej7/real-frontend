@@ -8,6 +8,13 @@ import Rooms from "./pages/account/Rooms";
 import AccountSetting from "./pages/account/AccountSetting";
 import Verify from "./pages/account/Veriy";
 import RoomFullView from "./pages/general/RoomFullView";
+import Admin from "./pages/admin/Admin";
+import AdminAdd from "./pages/admin/AdminAdd";
+import AdminTenant from "./pages/admin/AdminTenant";
+import AdminSetting from "./pages/admin/AdminSetting";
+import AdminLogin from "./pages/admin/AdminRL/AdminLogin";
+import AdminRegister from "./pages/admin/AdminRL/AdminRegister";
+
 function App() {
   return (
     <>
@@ -20,6 +27,12 @@ function App() {
         <Route path="/account/setting" element={<AccountSetting />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="rooms/:id" element={<RoomFullView />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/add" element={<AdminAdd />} />
+        <Route path="/admin/tenant" element={<AdminTenant />} />
+        <Route path="/admin/setting" element={<AdminSetting />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin-register" element={<AdminRegister />} />
       </Routes>
     </>
   );

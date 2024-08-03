@@ -9,18 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CiSearch } from "react-icons/ci";
 import RoomCard from "@/components/ui/RoomsCard";
+import { useRoomContext } from "@/Provider/RoomsContext";
 const Account: React.FC = () => {
   useAuth("account");
 
   const user = useUserContext();
   const [loading, setLoading] = useState<boolean>(true);
-
+  const rooms = useRoomContext();
   useEffect(() => {
     if (user && user.email !== "") {
       setLoading(false);
     }
-  }, [user]);
-
+  }, [user, rooms]);
   if (loading) return <Loading route="account" />;
   if (user && !user.isVerified) return <Verify />;
 
@@ -47,18 +47,16 @@ const Account: React.FC = () => {
           </select>
         </div>
         <div className="h-auto overflow-y-auto">
-          <RoomCard
-            id={1}
-            title="Apartment"
-            description="4 Rooms, 1 Ktichen, and 2 bathroom."
-            thumbnail="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          />
-          <RoomCard
-            id={2}
-            title="Apartment"
-            description="4 Rooms, 1 Ktichen, and 2 bathroom."
-            thumbnail="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          />
+          {rooms.map((room) => {
+            return (
+              <RoomCard
+                title={room.address}
+                description={`${room.noOfRooms} Rooms`}
+                id={room._id}
+                thumbnail={`/${room.img[0]}`}
+              />
+            );
+          })}
         </div>
       </MobileNav>
       <DesktopSection account title="Dashboard" isNav>
@@ -81,20 +79,7 @@ const Account: React.FC = () => {
             <option>Greedo</option>
           </select>
         </div>
-        <div className="flex w-[100%] scale-90 gap-12">
-          <RoomCard
-            id={1}
-            title="Apartment"
-            description="4 Rooms, 1 Ktichen, and 2 bathroom."
-            thumbnail="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          />
-          <RoomCard
-            id={2}
-            title="Apartment"
-            description="4 Rooms, 1 Ktichen, and 2 bathroom."
-            thumbnail="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          />
-        </div>
+        <div className="flex w-[100%] scale-90 gap-12"></div>
       </DesktopSection>
     </div>
   );

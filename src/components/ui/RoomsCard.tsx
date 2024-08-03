@@ -4,12 +4,12 @@ interface Props {
   title: string;
   description: string;
   thumbnail: string;
-  id: number;
+  id: string;
 }
 const RoomCard: React.FC<Props> = ({ title, description, thumbnail, id }) => {
   return (
     <>
-      <div className="card card-compact bg-base-100 w-80 mt-3 mb-3 shadow-md h-96">
+      <div className="card card-compact bg-base-100 w-80 mt-3 mb-3 shadow-md h-auto">
         <figure className="max-h-72">
           <img src={`${thumbnail}`} alt="Shoes" />
         </figure>

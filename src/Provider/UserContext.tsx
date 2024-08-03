@@ -27,7 +27,6 @@ const UserContextProvide: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     (async () => {
       const response = await axios.post(`${url}user`, { token: cookie.token });
-      console.log(response.data);
       setUserData(response.data);
     })();
   }, []);

@@ -110,7 +110,7 @@ export const MobileNav: React.FC<Props> = ({ children, title }) => {
             </Link>
             <li className="text-white">
               <Link to="/account/rooms" className="text-white">
-                Rooms
+                Messages
               </Link>
             </li>
             <li className="text-white">

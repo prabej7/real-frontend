@@ -1,3 +1,6 @@
+import Message from "./message";
+import Rooms from "./rooms";
+
 interface User {
   email: string;
   _id: string;
@@ -8,6 +11,8 @@ interface User {
   address?: string;
   isVerified: Boolean;
   avatar?: String;
+  rooms?: Rooms[];
+  messages?: Message[];
 }
 
 export default User;
