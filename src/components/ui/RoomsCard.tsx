@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Props {
   title: string;
@@ -7,6 +7,7 @@ interface Props {
   id: string;
 }
 const RoomCard: React.FC<Props> = ({ title, description, thumbnail, id }) => {
+  const navigate = useNavigate();
   return (
     <>
       <div className="card card-compact bg-base-100 w-80 mt-3 mb-3 shadow-md h-auto">
@@ -17,9 +18,12 @@ const RoomCard: React.FC<Props> = ({ title, description, thumbnail, id }) => {
           <h2 className="card-title">{title}</h2>
           <p>{description}</p>
           <div className="card-actions justify-end">
-            <Link to={`/rooms/${id}`}>
-              <button className="btn btn-primary">Take a tour!</button>
-            </Link>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate(`/rooms/${id}`)}
+            >
+              Take a tour!
+            </button>
           </div>
         </div>
       </div>
