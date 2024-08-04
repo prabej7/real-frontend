@@ -15,7 +15,7 @@ import AdminLogin from "./pages/admin/AdminRL/AdminLogin";
 import AdminRegister from "./pages/admin/AdminRL/AdminRegister";
 import Message from "./pages/account/Messages";
 import Chat from "./pages/account/Chat";
-import Chats from "./pages/admin/Chats";
+import ChatsAdmin from "./pages/admin/Chats";
 
 function App() {
   return (
@@ -33,10 +33,10 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/add" element={<AdminAdd />} />
         <Route path="/admin/tenant" element={<AdminTenant />} />
+        <Route path="/admin/chats/:id" element={<ChatsAdmin />} />
         <Route path="/admin/setting" element={<AdminSetting />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-register" element={<AdminRegister />} />
-        <Route path="/admin/chats/:id" element={<Chats />} />
       </Routes>
     </>
   );

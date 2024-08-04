@@ -6,17 +6,20 @@ import { MobileNav } from "@/components/ui/sideBar";
 import useAuth from "@/hooks/useAuth";
 import { useUserContext } from "@/Provider/UserContext";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
 const Message: React.FC = () => {
   const [cookie] = useCookies(["token"]);
+  const [loading, setLoading] = useState<boolean>(true);
   const user = useUserContext();
   useEffect(() => {
-    if (user.email.length > 0) {
+    if (user && user.email.length > 0) {
+      console.log(user);
+      setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   // useAuth("account/messages");
 

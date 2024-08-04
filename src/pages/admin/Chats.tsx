@@ -10,12 +10,13 @@ import { Input } from "@/components/ui/input";
 import { useCookies } from "react-cookie";
 import AdminNav from "@/components/ui/AdminNav";
 
-const Chats: React.FC = () => {
+const ChatsAdmin: React.FC = () => {
   const [cookie] = useCookies(["token"]);
   const [text, setText] = useState<string>("");
   const [msgs, setMsg] = useState<Message>();
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
+
   useEffect(() => {
     (async () => {
       try {
@@ -35,15 +36,17 @@ const Chats: React.FC = () => {
       setText("");
     } catch (e) {}
   };
-  if (loading) return <Loading />;
+
+  if (loading && !Array.isArray(msgs)) return <div>Loading...</div>;
+  // if (loading && !Array.isArray(msgs)) return <Loading />;
   return (
     <>
       <div className="h-screen w-screen flex ">
         <AdminNav />
         <div className="px-6">
           <div className="">
-            <div className=" chat-box">
-              <div className="">
+            <div className=" chat-box overflow-auto">
+              <div className=" overflow-y-auto">
                 {msgs.messages.map((msg, index) => {
                   return (
                     <div>
@@ -84,4 +87,4 @@ const Chats: React.FC = () => {
   );
 };
 
-export default Chats;
+export default ChatsAdmin;

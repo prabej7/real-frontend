@@ -3,7 +3,7 @@ import { MdDashboard } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { FaBookmark } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import useAuth from "@/hooks/useAuth";
 
@@ -30,7 +30,18 @@ const DesktopSection: React.FC<Props> = ({
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
 
   const navigate = useNavigate();
-
+  const handleLogout = () => {
+    removeCookie("token");
+    if (cookie.token) {
+      return handleLogout();
+    }
+    return navigate("/login");
+  };
+  useEffect(() => {
+    if (cookie && !cookie.token) {
+      navigate("/login");
+    }
+  }, [cookie]);
   return (
     <>
       <div className="h-screen w-screen flex text-white">
@@ -72,10 +83,7 @@ const DesktopSection: React.FC<Props> = ({
             </Link>
             <div
               className="flex items-center gap-2 hover:pl-3 transition-all cursor-pointer"
-              onClick={() => {
-                removeCookie("token");
-                navigate("/login");
-              }}
+              onClick={handleLogout}
             >
               <IoLogOut className="text-" />
               <p>Logout</p>

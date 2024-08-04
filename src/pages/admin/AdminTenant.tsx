@@ -1,36 +1,24 @@
 import AdminNav from "@/components/ui/AdminNav";
-import { useUserContext } from "@/Provider/UserContext";
-import axios from "axios";
-import url from "@/constant/url";
-import { useEffect, useState } from "react";
-import User from "@/constant/types/user";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
-interface Message {
-  messages: [
-    {
-      isAdmin: boolean;
-      userMsg: string;
-      adminMsg: string;
-    }
-  ];
-  _id: string;
-  user: User;
-}
-
+import { useState, useEffect } from "react";
+import axios from "axios";
+import url from "@/constant/url";
+import Message from "@/constant/types/message";
 const AdminTenant: React.FC = () => {
   const [allMsg, setMsg] = useState<Message[]>();
   const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    axios.get(`${url}get-messages`).then((response) => {
-      const allMessage = response.data as Message[];
 
-      setMsg(allMessage);
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const response = await axios.get(`${url}get-messages`);
+      setMsg(response.data);
       setLoading(false);
-    });
-  }, [allMsg]);
-  if (loading) return <div>Loading...</div>;
+    })();
+  }, []);
+
+  if (loading && !Array.isArray(allMsg)) return <div>Loading...</div>;
 
   return (
     <>
@@ -51,16 +39,17 @@ const AdminTenant: React.FC = () => {
                   </th>
                   <th>Name</th>
                   <th>Email</th>
-
                   <th>Verified</th>
-
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {allMsg.map((msg) => {
+                  if (!msg.user) {
+                    return null; // Skip this item if msg.user is null or undefined
+                  }
                   return (
-                    <tr>
+                    <tr key={msg._id}>
                       <th>
                         <label>
                           <input type="checkbox" className="checkbox" />
@@ -91,16 +80,13 @@ const AdminTenant: React.FC = () => {
                           Tenant
                         </span>
                       </td>
-
                       <td>{msg.user.verified ? "True" : "False"}</td>
-
                       <th>
                         <Link to={`/admin/chats/${msg._id}`}>
                           <button className="btn btn-ghost btn-xs">
                             Message
                           </button>
                         </Link>
-
                         <Button className="ml-12 bg-red-500">Delete</Button>
                       </th>
                     </tr>
@@ -113,7 +99,6 @@ const AdminTenant: React.FC = () => {
                   <th></th>
                   <th>Name</th>
                   <th>Email</th>
-
                   <th>Verified</th>
                 </tr>
               </tfoot>
