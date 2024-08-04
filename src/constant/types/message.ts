@@ -1,8 +1,15 @@
+import User from "./user";
+
 interface Message {
   _id: string;
-  usermsg: string[];
-  adminmsg: string[];
-  user: string;
+  messages: [
+    {
+      isAdmin: boolean;
+      adminMsg: string;
+      userMsg: string;
+    }
+  ];
+  user?: User;
 }
 
 export default Message;

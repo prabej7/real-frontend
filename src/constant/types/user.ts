@@ -12,7 +12,8 @@ interface User {
   isVerified: Boolean;
   avatar?: String;
   rooms?: Rooms[];
-  messages?: Message[];
+  messages?: Message;
+  messageId?: string;
 }
 
 export default User;

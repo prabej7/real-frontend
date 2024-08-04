@@ -28,7 +28,7 @@ const RoomFullView: React.FC = () => {
       const { status } = await axios.post(`${url}book-room`, formData);
       if (status == 200) {
         notify.success("Successfully Booked!");
-        navigate("/account/rooms");
+        navigate("/account/messages");
       }
     } catch (e) {}
   };

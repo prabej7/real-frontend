@@ -33,7 +33,7 @@ const Galery: React.FC<Props> = ({ imgs }) => {
                 <CardContent className="flex aspect-square items-center justify-center p-6">
                   <span className="text-4xl font-semibold">
                     <img
-                      src={`/${imgurl}`}
+                      src={`${imgurl}`}
                       alt=""
                       className="max-h-44 lg:h-96 "
                     />

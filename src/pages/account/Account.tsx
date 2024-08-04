@@ -17,11 +17,11 @@ const Account: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const rooms = useRoomContext();
   useEffect(() => {
-    if (user && user.email !== "") {
+    if (user && user.email !== "" && rooms instanceof Array) {
       setLoading(false);
     }
   }, [user, rooms]);
-  if (loading) return <Loading route="account" />;
+  if (loading) return <Loading />;
   if (user && !user.isVerified) return <Verify />;
 
   return (
@@ -53,13 +53,13 @@ const Account: React.FC = () => {
                 title={room.address}
                 description={`${room.noOfRooms} Rooms`}
                 id={room._id}
-                thumbnail={`/${room.img[0]}`}
+                thumbnail={`${room.img[0]}`}
               />
             );
           })}
         </div>
       </MobileNav>
-      <DesktopSection account title="Dashboard" isNav>
+      <DesktopSection account title="Dashboard" isNav route="account">
         <p className="text-center mt-6 font-medium">
           What are you looking for?
         </p>

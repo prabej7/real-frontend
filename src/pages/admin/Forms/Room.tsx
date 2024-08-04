@@ -82,8 +82,9 @@ const RoomForm: React.FC = () => {
           wifi: false,
         });
         reset();
+      } else {
+        notify.error("Something went wrong!");
       }
-      notify.error("Something went wrong!");
     } catch (e) {
       const error = e as AxiosError;
       notify.error(error.response.statusText);

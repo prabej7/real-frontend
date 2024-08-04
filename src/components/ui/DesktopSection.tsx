@@ -5,6 +5,7 @@ import { FaBookmark } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import useAuth from "@/hooks/useAuth";
 
 interface Props {
   children?: React.ReactNode;
@@ -13,6 +14,7 @@ interface Props {
   rooms?: boolean;
   setting?: boolean;
   isNav?: boolean;
+  route?: string;
 }
 
 const DesktopSection: React.FC<Props> = ({
@@ -22,6 +24,7 @@ const DesktopSection: React.FC<Props> = ({
   rooms,
   setting,
   isNav,
+  route,
 }) => {
   const [isShow, setShow] = useState<boolean>(true);
   const [cookie, setCookie, removeCookie] = useCookies(["token"]);
@@ -50,13 +53,13 @@ const DesktopSection: React.FC<Props> = ({
               <p>Dashboard</p>
             </Link>
             <Link
-              to="/account/rooms"
+              to="/account/messages"
               className={`flex items-center gap-2 ${
                 rooms ? "pl-3" : "hover:pl-3"
               }  transition-all`}
             >
               <FaBookmark className="text-" />
-              <p>Rooms</p>
+              <p>Messages</p>
             </Link>
             <Link
               to="/account/setting"
