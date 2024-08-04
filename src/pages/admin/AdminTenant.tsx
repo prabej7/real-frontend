@@ -92,7 +92,7 @@ const AdminTenant: React.FC = () => {
                         </span>
                       </td>
 
-                      <td>{msg.user.isVerified ? "True" : "False"}</td>
+                      <td>{msg.user.verified ? "True" : "False"}</td>
 
                       <th>
                         <Link to={`/admin/chats/${msg._id}`}>

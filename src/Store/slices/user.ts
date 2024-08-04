@@ -4,7 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: User = {
   email: "",
   _id: "",
-  isVerified: false,
+  verified: false,
 };
 
 export const userSlice = createSlice({
@@ -12,7 +12,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
-      const { _id, email, address, fullName, location, phone, isVerified } =
+      const { _id, email, address, fullName, location, phone, verified } =
         action.payload;
       state._id = _id;
       state.phone = phone;
@@ -20,7 +20,7 @@ export const userSlice = createSlice({
       state.fullName = fullName;
       state.location = location;
       state.email = email;
-      state.isVerified = isVerified;
+      state.verified = verified;
     },
   },
 });
