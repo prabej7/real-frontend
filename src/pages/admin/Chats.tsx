@@ -8,6 +8,7 @@ import DesktopSection from "@/components/ui/DesktopSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCookies } from "react-cookie";
+import AdminNav from "@/components/ui/AdminNav";
 
 const Chats: React.FC = () => {
   const [cookie] = useCookies(["token"]);
@@ -37,8 +38,9 @@ const Chats: React.FC = () => {
   if (loading) return <Loading />;
   return (
     <>
-      <DesktopSection isNav>
-        <div>
+      <div className="h-screen w-screen flex ">
+        <AdminNav />
+        <div className="px-6">
           <div className="">
             <div className=" chat-box">
               <div className="">
@@ -77,7 +79,7 @@ const Chats: React.FC = () => {
             </div>
           </div>
         </div>
-      </DesktopSection>
+      </div>
     </>
   );
 };
