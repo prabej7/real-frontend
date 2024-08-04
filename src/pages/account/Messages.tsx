@@ -30,7 +30,10 @@ const Message: React.FC = () => {
                 <div className="bg-black rounded-full h-12 w-12 justify-center items-center">
                   <p className="text-white text-center mt-3">A</p>
                 </div>
-                <Link to="/chat" className="py-6 px-6">
+                <Link
+                  to={`/account/messages/${user.messageId}`}
+                  className="py-6 px-6"
+                >
                   <h2 className="font-medium">Admin</h2>
                   <p className="text-sm">Tap to start a conversation!</p>
                 </Link>

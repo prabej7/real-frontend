@@ -21,12 +21,13 @@ const UserContextProvide: React.FC<Props> = ({ children }) => {
   const [userData, setUserData] = useState<User>({
     email: "",
     _id: "",
-    isVerified: false,
+    verified: false,
   });
   const [cookie] = useCookies(["token"]);
   useEffect(() => {
     (async () => {
       const response = await axios.post(`${url}user`, { token: cookie.token });
+      console.log(response.data);
       setUserData(response.data);
     })();
   }, []);

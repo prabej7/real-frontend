@@ -10,19 +10,41 @@ import { Button } from "@/components/ui/button";
 import { CiSearch } from "react-icons/ci";
 import RoomCard from "@/components/ui/RoomsCard";
 import { useRoomContext } from "@/Provider/RoomsContext";
+import User from "@/constant/types/user";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import url from "@/constant/url";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Account: React.FC = () => {
+  const navigate = useNavigate();
+  const notify = {
+    success: (text: string) => toast.success(text),
+    error: (text: string) => toast.error(text),
+  };
+  const [cookie] = useCookies(["token"]);
   useAuth("account");
-
-  const user = useUserContext();
+  const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [roomLoading, setRoomLoading] = useState<boolean>(true);
   const rooms = useRoomContext();
   useEffect(() => {
-    if (user && user.email !== "" && rooms instanceof Array) {
+    (async () => {
+      const response = await axios.post(`${url}user`, { token: cookie.token });
+      setUser(response.data);
       setLoading(false);
+    })();
+  }, [user]);
+
+  useEffect(() => {
+    if (Array.isArray(rooms)) {
+      setRoomLoading(false);
     }
-  }, [user, rooms]);
-  if (loading) return <Loading />;
-  if (user && !user.isVerified) return <Verify />;
+  }, [rooms]);
+  if (loading) return <Loading route="account" />;
+
+  if (user && !user.verified) return <Verify />;
 
   return (
     <div className="section flex overflow-x-clip">
@@ -47,16 +69,22 @@ const Account: React.FC = () => {
           </select>
         </div>
         <div className="h-auto overflow-y-auto">
-          {rooms.map((room) => {
-            return (
-              <RoomCard
-                title={room.address}
-                description={`${room.noOfRooms} Rooms`}
-                id={room._id}
-                thumbnail={`${room.img[0]}`}
-              />
-            );
-          })}
+          {roomLoading ? (
+            "Loading..."
+          ) : (
+            <div>
+              {rooms.map((room) => {
+                return (
+                  <RoomCard
+                    title={room.address}
+                    description={`${room.noOfRooms} Rooms`}
+                    id={room._id}
+                    thumbnail={`${room.img[0]}`}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </MobileNav>
       <DesktopSection account title="Dashboard" isNav route="account">
@@ -81,6 +109,7 @@ const Account: React.FC = () => {
         </div>
         <div className="flex w-[100%] scale-90 gap-12"></div>
       </DesktopSection>
+      <ToastContainer />
     </div>
   );
 };

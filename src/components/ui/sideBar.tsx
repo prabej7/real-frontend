@@ -109,7 +109,7 @@ export const MobileNav: React.FC<Props> = ({ children, title }) => {
               Dashboard
             </Link>
             <li className="text-white">
-              <Link to="/account/rooms" className="text-white">
+              <Link to="/account/messages" className="text-white">
                 Messages
               </Link>
             </li>

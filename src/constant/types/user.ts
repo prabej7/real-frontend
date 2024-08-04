@@ -9,7 +9,7 @@ interface User {
   location?: Location;
   fullName?: string;
   address?: string;
-  isVerified: Boolean;
+  verified?: boolean;
   avatar?: String;
   rooms?: Rooms[];
   messages?: Message;

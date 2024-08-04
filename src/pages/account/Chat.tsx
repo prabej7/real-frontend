@@ -57,14 +57,38 @@ const Chat: React.FC = () => {
       <div className="section flex overflow-clip">
         <MobileNav title="Messages">
           <div>
-            <div className="h-24 w-[102%] bg-slate-200 rounded-md mt-6 mb-6 flex items-center px-6">
-              <div className="bg-black rounded-full h-12 w-12 justify-center items-center">
-                <p className="text-white text-center mt-3">A</p>
+            <div className="">
+              <div className="chat-box">
+                {messages.messages.map((msg, index) => {
+                  return (
+                    <div className="">
+                      {msg.isAdmin && index !== 0 && (
+                        <div className="chat chat-start">
+                          <div className="chat-bubble">{msg.adminMsg}</div>
+                        </div>
+                      )}
+                      {!msg.isAdmin && index !== 0 && (
+                        <div className="chat chat-end ">
+                          <div className="chat-bubble bg-blue-600">
+                            You: {msg.userMsg}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <Link to="/chat" className="py-6 px-6">
-                <h2 className="font-medium">Admin</h2>
-                <p className="text-sm">Tap to start a conversation!</p>
-              </Link>
+
+              <div className="flex gap-6 mt-6">
+                <Input
+                  placeholder="Message"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
+                <Button disabled={text.length == 0} onClick={handleSend}>
+                  Send
+                </Button>
+              </div>
             </div>
           </div>
         </MobileNav>

@@ -9,7 +9,9 @@ interface Props {
 const Loading: React.FC<Props> = ({ route }) => {
   const user = useUserContext();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    navigate(`/${route}`);
+  });
   return (
     <>
       <div className="h-screen w-screen flex items-center justify-center">
