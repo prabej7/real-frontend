@@ -18,12 +18,9 @@ const RoomCard: React.FC<Props> = ({ title, description, thumbnail, id }) => {
           <h2 className="card-title">{title}</h2>
           <p>{description}</p>
           <div className="card-actions justify-end">
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate(`/rooms/${id}`)}
-            >
+            <Link className="btn btn-primary" to={`/rooms/${id}`}>
               Take a tour!
-            </button>
+            </Link>
           </div>
         </div>
       </div>
