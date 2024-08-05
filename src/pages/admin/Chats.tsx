@@ -18,38 +18,35 @@ const ChatsAdmin: React.FC = () => {
   const [msgs, setMsg] = useState<Msg[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const createSocket = useCallback(() => {
-    const socket = io(
-      `https://server-real-bsvhhynpe-prabej-hussains-projects.vercel.app/`,
-      {
-        query: {
-          token: cookie.token,
-        },
-      }
-    );
-    return socket;
-  }, [cookie.token]);
+  const [sending, setSending] = useState<boolean>(false);
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  // const createSocket = useCallback(() => {
+  //   const socket = io(`${url}`, {
+  //     query: {
+  //       token: cookie.token,
+  //     },
+  //   });
+  //   return socket;
+  // }, [cookie.token]);
 
-  useEffect(() => {
-    const s = createSocket();
-    setSocket(s);
-    return () => {
-      if (s) s.disconnect();
-    };
-  }, [createSocket]);
+  // useEffect(() => {
+  //   const s = createSocket();
+  //   setSocket(s);
+  //   return () => {
+  //     if (s) s.disconnect();
+  //   };
+  // }, [createSocket]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("receive-message", (data) => {
-        setMsg((prev) => [...prev, data]);
-      });
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on("receive-message", (data) => {
+  //       setMsg((prev) => [...prev, data]);
+  //     });
 
-      // Cleanup function to remove the listener
-    }
-  }, [socket]);
-
-  useEffect(() => {
+  //     // Cleanup function to remove the listener
+  //   }
+  // }, [socket]);
+  const fecthMessage = () => {
     (async () => {
       try {
         const response = await axios.get(`${url}get-messagebox/${id}`);
@@ -60,24 +57,32 @@ const ChatsAdmin: React.FC = () => {
         console.error(e);
       }
     })();
+  };
+  useEffect(() => {
+    fecthMessage();
   }, [id]);
 
   const handleSend = async () => {
     try {
-      // const response = await axios.post(`${url}message`, {
-      //   token: cookie.token,
-      //   messageBoxId: id,
-      //   text: text,
-      // });
-      socket.emit("send-message", {
+      setSending(true);
+      const response = await axios.post(`${url}message`, {
+        token: cookie.token,
         messageBoxId: id,
         text: text,
-        role: "admin",
-        user: cookie.token,
-        toUser: userId,
       });
+      // socket.emit("send-message", {
+      //   messageBoxId: id,
+      //   text: text,
+      //   role: "admin",
+      //   user: cookie.token,
+      //   toUser: userId,
+      // });
+    } catch (e) {
+    } finally {
+      setSending(false);
+      fecthMessage();
       setText("");
-    } catch (e) {}
+    }
   };
 
   if (loading && !Array.isArray(msgs)) return <div>Loading...</div>;
@@ -119,8 +124,11 @@ const ChatsAdmin: React.FC = () => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
-              <Button disabled={text.length == 0} onClick={handleSend}>
-                Send
+              <Button
+                disabled={text.length == 0 || sending}
+                onClick={handleSend}
+              >
+                {sending ? "Sending..." : "Send"}
               </Button>
             </div>
           </div>

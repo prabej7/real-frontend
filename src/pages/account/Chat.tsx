@@ -21,33 +21,34 @@ const Chat: React.FC = () => {
   const [allMessages, setMessage] = useState<Msg[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [cookie] = useCookies(["token"]);
-  const [socket, setSocket] = useState<Socket | null>(null);
-  const createSocket = useCallback(() => {
-    const socket = io(`https://server-real-bsvhhynpe-prabej-hussains-projects.vercel.app/`, {
-      query: {
-        token: cookie.token,
-      },
-    });
-    return socket;
-  }, [cookie.token]);
+  const [sending, setSending] = useState<boolean>(false);
+  // const [socket, setSocket] = useState<Socket | null>(null);
+  // const createSocket = useCallback(() => {
+  //   const socket = io(`${url}`, {
+  //     query: {
+  //       token: cookie.token,
+  //     },
+  //   });
+  //   return socket;
+  // }, [cookie.token]);
   const [text, setText] = useState<string>("");
   const { chatid } = useParams();
   const user = useUserContext();
-  useEffect(() => {
-    const s = createSocket();
-    setSocket(s);
-    return () => {
-      if (s) s.disconnect();
-    };
-  }, [createSocket]);
+  // useEffect(() => {
+  //   const s = createSocket();
+  //   setSocket(s);
+  //   return () => {
+  //     if (s) s.disconnect();
+  //   };
+  // }, [createSocket]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("receive-message", (data) => {
-        setMessage((prev) => [...prev, data]);
-      });
-    }
-  }, [socket]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on("receive-message", (data) => {
+  //       setMessage((prev) => [...prev, data]);
+  //     });
+  //   }
+  // }, [socket]);
   useEffect(() => {
     if (user && user.email.length > 0) {
       setLoading(false);
@@ -57,33 +58,35 @@ const Chat: React.FC = () => {
   if (loading) return <>Loading...</>;
   const { messages } = user;
   const handleSend = async () => {
-    // try {
-    //   const response = await axios.post(`${url}message`, {
-    //     token: cookie.token,
-    //     messageBoxId: chatid,
-    //     text: text,
-    //   });
-    //   if (response.status == 200) {
-    //     setMessage((prev) => [
-    //       ...prev,
-    //       {
-    //         isAdmin: false,
-    //         userMsg: text,
-    //       },
-    //     ]);
-    //   }
-    // } catch (e) {
-    //   console.log(e);
-    // } finally {
-    //   setText("");
-    // }
+    setSending(true);
+    try {
+      const response = await axios.post(`${url}message`, {
+        token: cookie.token,
+        messageBoxId: chatid,
+        text: text,
+      });
+      if (response.status == 200) {
+        setMessage((prev) => [
+          ...prev,
+          {
+            isAdmin: false,
+            userMsg: text,
+          },
+        ]);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setText("");
+      setSending(false);
+    }
 
-    socket.emit("send-message", {
-      messageBoxId: user.messageId,
-      text: text,
-      role: "user",
-      user: cookie.token,
-    });
+    // socket.emit("send-message", {
+    //   messageBoxId: user.messageId,
+    //   text: text,
+    //   role: "user",
+    //   user: cookie.token,
+    // });
   };
 
   return (
@@ -119,8 +122,11 @@ const Chat: React.FC = () => {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                 />
-                <Button disabled={text.length == 0} onClick={handleSend}>
-                  Send
+                <Button
+                  disabled={text.length == 0 || sending}
+                  onClick={handleSend}
+                >
+                  {sending ? "Sending..." : "Send"}
                 </Button>
               </div>
             </div>
@@ -157,8 +163,11 @@ const Chat: React.FC = () => {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                 />
-                <Button disabled={text.length == 0} onClick={handleSend}>
-                  Send
+                <Button
+                  disabled={text.length == 0 || sending}
+                  onClick={handleSend}
+                >
+                  {sending ? "Sending..." : "Send"}
                 </Button>
               </div>
             </div>
