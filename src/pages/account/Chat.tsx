@@ -5,12 +5,14 @@ import "../../App.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/Provider/UserContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import Message from "@/constant/types/message";
-interface Msg {
+import { io, Socket } from "socket.io-client";
+
+export interface Msg {
   isAdmin?: boolean;
   adminMsg?: string;
   userMsg?: string;
@@ -19,11 +21,35 @@ const Chat: React.FC = () => {
   const [allMessages, setMessage] = useState<Msg[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [cookie] = useCookies(["token"]);
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const createSocket = useCallback(() => {
+    const socket = io(`${url}`, {
+      query: {
+        token: cookie.token,
+      },
+    });
+    return socket;
+  }, [cookie.token]);
   const [text, setText] = useState<string>("");
   const { chatid } = useParams();
   const user = useUserContext();
   useEffect(() => {
-    if (user.email.length > 0) {
+    const s = createSocket();
+    setSocket(s);
+    return () => {
+      if (s) s.disconnect();
+    };
+  }, [createSocket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receive-message", (data) => {
+        setMessage((prev) => [...prev, data]);
+      });
+    }
+  }, [socket]);
+  useEffect(() => {
+    if (user && user.email.length > 0) {
       setLoading(false);
       setMessage(user.messages.messages);
     }
@@ -31,27 +57,35 @@ const Chat: React.FC = () => {
   if (loading) return <>Loading...</>;
   const { messages } = user;
   const handleSend = async () => {
-    try {
-      const response = await axios.post(`${url}message`, {
-        token: cookie.token,
-        messageBoxId: chatid,
-        text: text,
-      });
-      if (response.status == 200) {
-        setMessage((prev) => [
-          ...prev,
-          {
-            isAdmin: false,
-            userMsg: text,
-          },
-        ]);
-      }
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setText("");
-    }
+    // try {
+    //   const response = await axios.post(`${url}message`, {
+    //     token: cookie.token,
+    //     messageBoxId: chatid,
+    //     text: text,
+    //   });
+    //   if (response.status == 200) {
+    //     setMessage((prev) => [
+    //       ...prev,
+    //       {
+    //         isAdmin: false,
+    //         userMsg: text,
+    //       },
+    //     ]);
+    //   }
+    // } catch (e) {
+    //   console.log(e);
+    // } finally {
+    //   setText("");
+    // }
+
+    socket.emit("send-message", {
+      messageBoxId: user.messageId,
+      text: text,
+      role: "user",
+      user: cookie.token,
+    });
   };
+
   return (
     <>
       <div className="section flex overflow-clip">
@@ -59,15 +93,15 @@ const Chat: React.FC = () => {
           <div>
             <div className="">
               <div className="chat-box">
-                {messages.messages.map((msg, index) => {
+                {allMessages.map((msg, index) => {
                   return (
-                    <div className="">
-                      {msg.isAdmin && index !== 0 && (
+                    <div className="" key={index}>
+                      {msg.isAdmin && msg.adminMsg && (
                         <div className="chat chat-start">
                           <div className="chat-bubble">{msg.adminMsg}</div>
                         </div>
                       )}
-                      {!msg.isAdmin && index !== 0 && (
+                      {msg.userMsg && (
                         <div className="chat chat-end ">
                           <div className="chat-bubble bg-blue-600">
                             You: {msg.userMsg}
@@ -96,17 +130,20 @@ const Chat: React.FC = () => {
           <div>
             <div className="">
               <div className=" chat-box">
-                {messages.messages.map((msg, index) => {
+                {allMessages.map((msg, index) => {
                   return (
-                    <div className="">
-                      {msg.isAdmin && index !== 0 && (
+                    <div className="" key={index}>
+                      {msg.isAdmin && msg.adminMsg && (
                         <div className="chat chat-start">
                           <div className="chat-bubble">{msg.adminMsg}</div>
                         </div>
                       )}
-                      {!msg.isAdmin && index !== 0 && (
+
+                      {msg.userMsg && (
                         <div className="chat chat-end">
-                          <div className="chat-bubble">You: {msg.userMsg}</div>
+                          <div className="chat-bubble bg-blue-600">
+                            You: {msg.userMsg}
+                          </div>
                         </div>
                       )}
                     </div>

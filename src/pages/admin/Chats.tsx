@@ -1,6 +1,6 @@
 import axios from "axios";
 import url from "@/constant/url";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Message from "@/constant/types/message";
 import Loading from "@/components/ui/Loading";
@@ -9,29 +9,69 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCookies } from "react-cookie";
 import AdminNav from "@/components/ui/AdminNav";
-
+import { io, Socket } from "socket.io-client";
+import { Msg } from "../account/Chat";
 const ChatsAdmin: React.FC = () => {
+  const [userId, setUserId] = useState<string>("");
   const [cookie] = useCookies(["token"]);
   const [text, setText] = useState<string>("");
-  const [msgs, setMsg] = useState<Message>();
+  const [msgs, setMsg] = useState<Msg[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { id } = useParams();
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const createSocket = useCallback(() => {
+    const socket = io(`${url}`, {
+      query: {
+        token: cookie.token,
+      },
+    });
+    return socket;
+  }, [cookie.token]);
+
+  useEffect(() => {
+    const s = createSocket();
+    setSocket(s);
+    return () => {
+      if (s) s.disconnect();
+    };
+  }, [createSocket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("receive-message", (data) => {
+        setMsg((prev) => [...prev, data]);
+      });
+
+      // Cleanup function to remove the listener
+    }
+  }, [socket]);
 
   useEffect(() => {
     (async () => {
       try {
         const response = await axios.get(`${url}get-messagebox/${id}`);
-        setMsg(response.data);
+        setUserId(response.data.user._id);
+        setMsg(response.data.messages || []);
         setLoading(false);
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     })();
-  }, [msgs]);
+  }, [id]);
+
   const handleSend = async () => {
     try {
-      const response = await axios.post(`${url}message`, {
-        token: cookie.token,
+      // const response = await axios.post(`${url}message`, {
+      //   token: cookie.token,
+      //   messageBoxId: id,
+      //   text: text,
+      // });
+      socket.emit("send-message", {
         messageBoxId: id,
         text: text,
+        role: "admin",
+        user: cookie.token,
+        toUser: userId,
       });
       setText("");
     } catch (e) {}
@@ -47,10 +87,10 @@ const ChatsAdmin: React.FC = () => {
           <div className="">
             <div className=" chat-box overflow-auto">
               <div className=" overflow-y-auto">
-                {msgs.messages.map((msg, index) => {
+                {msgs.map((msg, index) => {
                   return (
-                    <div>
-                      {msg.isAdmin && index !== 0 ? (
+                    <div key={index}>
+                      {msg.isAdmin && msg.adminMsg ? (
                         <div className="chat chat-end">
                           <div className="chat-bubble bg-blue-600">
                             {msg.adminMsg}
