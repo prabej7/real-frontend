@@ -95,7 +95,7 @@ const Chat: React.FC = () => {
         <MobileNav title="Messages">
           <div>
             <div className="">
-              <div className="chat-box">
+              <div className="chat-box overflow-auto">
                 {allMessages.map((msg, index) => {
                   return (
                     <div className="" key={index}>
@@ -134,8 +134,8 @@ const Chat: React.FC = () => {
         </MobileNav>
         <DesktopSection rooms title="Messages" isNav>
           <div>
-            <div className="">
-              <div className=" chat-box">
+            <div>
+              <div className=" chat-box overflow-auto">
                 {allMessages.map((msg, index) => {
                   return (
                     <div className="" key={index}>
