@@ -106,6 +106,7 @@ const HostelForm: React.FC = () => {
       }
       notify.error("Something went wrong!");
     } catch (e) {
+      console.log(e);
       const error = e as AxiosError;
       notify.error(error.response.statusText);
     } finally {

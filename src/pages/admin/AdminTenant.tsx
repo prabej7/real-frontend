@@ -87,7 +87,6 @@ const AdminTenant: React.FC = () => {
                             Message
                           </button>
                         </Link>
-                        <Button className="ml-12 bg-red-500">Delete</Button>
                       </th>
                     </tr>
                   );
