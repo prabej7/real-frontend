@@ -20,7 +20,7 @@ const ChatsAdmin: React.FC = () => {
   const { id } = useParams();
   const [socket, setSocket] = useState<Socket | null>(null);
   const createSocket = useCallback(() => {
-    const socket = io(`${url}`, {
+    const socket = io(`${url}/`, {
       query: {
         token: cookie.token,
       },
