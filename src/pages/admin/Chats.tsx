@@ -20,11 +20,14 @@ const ChatsAdmin: React.FC = () => {
   const { id } = useParams();
   const [socket, setSocket] = useState<Socket | null>(null);
   const createSocket = useCallback(() => {
-    const socket = io(`${url}`, {
-      query: {
-        token: cookie.token,
-      },
-    });
+    const socket = io(
+      `https://server-real-bsvhhynpe-prabej-hussains-projects.vercel.app/`,
+      {
+        query: {
+          token: cookie.token,
+        },
+      }
+    );
     return socket;
   }, [cookie.token]);
 
