@@ -23,7 +23,7 @@ const Chat: React.FC = () => {
   const [cookie] = useCookies(["token"]);
   const [socket, setSocket] = useState<Socket | null>(null);
   const createSocket = useCallback(() => {
-    const socket = io(`https://real-server-five.vercel.app`, {
+    const socket = io(`${url}`, {
       query: {
         token: cookie.token,
       },
