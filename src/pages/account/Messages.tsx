@@ -21,8 +21,8 @@ const Message: React.FC = () => {
     }
   }, []);
 
-  // useAuth("account/messages");
-
+  useAuth("account/messages");
+  if (loading) return <div>Loading...</div>;
   if (user) {
     return (
       <>
