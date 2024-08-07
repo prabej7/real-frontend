@@ -99,7 +99,7 @@ const AccountSetting: React.FC = () => {
       </>
     );
 
-  return <Loading route="setting" />;
+  return <Loading />;
 };
 
 export default AccountSetting;
