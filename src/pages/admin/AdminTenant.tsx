@@ -5,7 +5,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import url from "@/constant/url";
 import Message from "@/constant/types/message";
+import Loading from "@/components/ui/Loading";
+import useAdminAuth from "@/hooks/useAdminAuth";
 const AdminTenant: React.FC = () => {
+  useAdminAuth();
   const [allMsg, setMsg] = useState<Message[]>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -18,7 +21,7 @@ const AdminTenant: React.FC = () => {
     })();
   }, []);
 
-  if (loading && !Array.isArray(allMsg)) return <div>Loading...</div>;
+  if (loading && !Array.isArray(allMsg)) return <Loading />;
 
   return (
     <>
@@ -43,6 +46,7 @@ const AdminTenant: React.FC = () => {
                   <th></th>
                 </tr>
               </thead>
+
               <tbody>
                 {allMsg.map((msg) => {
                   if (!msg.user) {

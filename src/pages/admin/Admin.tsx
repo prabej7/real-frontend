@@ -2,8 +2,10 @@ import AdminNav from "@/components/ui/AdminNav";
 import { ChangeEvent, useState } from "react";
 import Rooms from "./Dashboard/Rooms";
 import Hostels from "./Dashboard/Hostels";
+import useAdminAuth from "@/hooks/useAdminAuth";
 
 const Admin: React.FC = () => {
+  useAdminAuth();
   const [selected, setSelected] = useState<string>("Rooms");
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelected(e.target.value);

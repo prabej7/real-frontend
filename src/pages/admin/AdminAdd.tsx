@@ -7,6 +7,7 @@ import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
 import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/Hostel";
+import useAdminAuth from "@/hooks/useAdminAuth";
 interface CheckBox {
   flat: boolean;
   waterFacility: boolean;
@@ -26,6 +27,7 @@ interface CheckBox {
 // }
 
 const AdminAdd: React.FC = () => {
+  useAdminAuth();
   const [selected, setSelected] = useState<string>("room");
 
   const LandForm: React.FC = () => {

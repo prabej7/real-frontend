@@ -22,7 +22,6 @@ interface Props {
 }
 
 const Galery: React.FC<Props> = ({ imgs }) => {
-  console.log(imgs);
   return (
     <Carousel className="w-full max-w-xs scale-100 lg:scale-150 lg:mt-24 lg:ml-28 lg:mb-12">
       <CarouselContent>

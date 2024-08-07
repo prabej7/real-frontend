@@ -24,17 +24,19 @@ const Rooms: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   return (
     <>
-      <div className="max-h-80 overflow-y-auto w-[1000px] grid grid-cols-2">
-        {rooms.map((room, index) => {
-          return (
-            <RoomCard
-              title={room.address}
-              description={`Rooms :${room.noOfRooms}`}
-              id={room._id}
-              thumbnail={room.img[0]}
-            />
-          );
-        })}
+      <div className="max-h-80 overflow-y-auto xl:w-[120%] 2xl:w-[170%] 2xl:max-h-[650px]">
+        <div className="grid grid-cols-3  2xl:grid-cols-4">
+          {rooms.map((room, index) => {
+            return (
+              <RoomCard
+                title={room.address}
+                description={`Rooms :${room.noOfRooms}`}
+                id={room._id}
+                thumbnail={room.img[0]}
+              />
+            );
+          })}
+        </div>
       </div>
     </>
   );

@@ -20,13 +20,11 @@ import "react-toastify/dist/ReactToastify.css";
 import Rooms from "./Display/Rooms";
 import Hostel from "./Display/Hostel";
 import Land from "./Display/Land";
+import SearchDisplay from "@/components/ui/SearchDisplay";
 const Account: React.FC = () => {
   const [selected, setSelected] = useState<string>("Rooms");
-  const navigate = useNavigate();
-  const notify = {
-    success: (text: string) => toast.success(text),
-    error: (text: string) => toast.error(text),
-  };
+
+  const [query, setQuery] = useState<string>("");
   const [cookie] = useCookies(["token"]);
   useAuth("account");
   const [user, setUser] = useState<User>();
@@ -40,7 +38,7 @@ const Account: React.FC = () => {
     })();
   }, [user]);
 
-  if (loading) return <Loading route="account" />;
+  if (loading) return <Loading />;
 
   if (user && !user.verified) return <Verify />;
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -59,6 +57,7 @@ const Account: React.FC = () => {
             <CiSearch />
           </Button>
         </div>
+        <div></div>
         <div className="mt-3">
           <select
             className="select select-bordered w-full max-w-xs h-[10px]"
@@ -76,10 +75,17 @@ const Account: React.FC = () => {
           <p className=" mt-6 font-medium">What are you looking for?</p>
 
           <div className="flex gap-3 mt-3">
-            <Input placeholder="Search here.." className="lg:w-80" />
+            <Input
+              placeholder="Search here.."
+              className="lg:w-80"
+              onChange={(e) => setQuery(e.target.value)}
+            />
             <Button>
               <CiSearch />
             </Button>
+          </div>
+          <div className="absolute z-10">
+            <SearchDisplay query={query} entity={selected} />
           </div>
           <div className="mt-3">
             <select

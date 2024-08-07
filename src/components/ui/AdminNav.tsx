@@ -61,7 +61,7 @@ const AdminNav: React.FC<Props> = ({ dashboard, add, tenant, setting }) => {
             className="flex items-center gap-2 hover:pl-3 transition-all cursor-pointer"
             onClick={() => {
               removeCookie("token");
-              navigate("/login");
+              console.log();
             }}
           >
             <IoLogOut className="text-" />

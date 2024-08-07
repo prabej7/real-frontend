@@ -6,7 +6,7 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
 const useAuth = (route: string) => {
-  const [cookie, setCookie] = useCookies(["token", "otp"]);
+  const [cookie] = useCookies(["token", "otp"]);
   const navigate = useNavigate();
   useEffect(() => {
     (async () => {
@@ -15,8 +15,8 @@ const useAuth = (route: string) => {
         const { status } = await axios.post(`${url}auth`, {
           token: cookie.token,
         });
-        if (status == 200) {
-          navigate(`/${route}`);
+        if (status !== 200) {
+          navigate(`/login`);
         }
       } catch (e) {
         const error = e as AxiosError;
