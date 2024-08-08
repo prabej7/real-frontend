@@ -22,8 +22,8 @@ const Hostel: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   return (
     <>
-      <div className="max-h-80 overflow-y-auto xl:w-[120%] 2xl:w-[170%] 2xl:max-h-[650px]">
-        <div className="grid grid-cols-3  2xl:grid-cols-4">
+      <div className="xl:max-h-80 overflow-y-auto xl:w-[120%] 2xl:w-[170%] 2xl:max-h-[650px]">
+        <div className="xl:grid grid-cols-3  2xl:grid-cols-4">
           {hostels.map((hostel) => {
             return (
               <HostelCard

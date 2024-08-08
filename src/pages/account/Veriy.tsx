@@ -26,7 +26,7 @@ const Verify: React.FC = () => {
     })();
   }, []);
   useEffect(() => {
-    if (user.email.length > 0) {
+    if (user && user.email.length > 0) {
       sendMail();
     }
   }, [user]);

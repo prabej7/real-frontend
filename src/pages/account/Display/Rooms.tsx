@@ -24,9 +24,9 @@ const Rooms: React.FC = () => {
   if (loading) return <div>Loading...</div>;
   return (
     <>
-      <div className="max-h-80 overflow-y-auto xl:w-[120%] 2xl:w-[170%] 2xl:max-h-[650px]">
-        <div className="grid grid-cols-3  2xl:grid-cols-4">
-          {rooms.map((room, index) => {
+      <div className="lg:max-h-80 xs:bg-black overflow-y-auto xl:w-[120%] 2xl:w-[170%] 2xl:max-h-[650px]">
+        <div className="xl:grid grid-cols-3  2xl:grid-cols-4">
+          {rooms.map((room) => {
             return (
               <RoomCard
                 title={room.address}
@@ -36,6 +36,7 @@ const Rooms: React.FC = () => {
               />
             );
           })}
+          
         </div>
       </div>
     </>

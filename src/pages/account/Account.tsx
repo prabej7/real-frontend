@@ -21,6 +21,7 @@ import Rooms from "./Display/Rooms";
 import Hostel from "./Display/Hostel";
 import Land from "./Display/Land";
 import SearchDisplay from "@/components/ui/SearchDisplay";
+import UpdateProfile from "@/components/ui/UpdateProfileHome";
 const Account: React.FC = () => {
   const [selected, setSelected] = useState<string>("Rooms");
 
@@ -44,6 +45,9 @@ const Account: React.FC = () => {
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelected(e.target.value);
   };
+  if (user && !user.fullName) {
+    return <UpdateProfile />;
+  }
   return (
     <div className="section flex overflow-x-clip">
       <MobileNav title="Dashboard">
@@ -68,7 +72,13 @@ const Account: React.FC = () => {
             <option>Lands</option>
           </select>
         </div>
-        <div className="h-auto overflow-y-auto"></div>
+        <div className="h-auto overflow-y-auto">
+          <div className="pt-12">
+            {selected == "Rooms" && <Rooms />}
+            {selected == "Hostels" && <Hostel />}
+            {selected == "Lands" && <Land />}
+          </div>
+        </div>
       </MobileNav>
       <DesktopSection account title="Dashboard" isNav route="account">
         <div className="lg:w-[900px]">

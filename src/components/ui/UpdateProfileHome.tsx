@@ -5,7 +5,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "./button";
@@ -14,15 +13,16 @@ import { ChangeEvent, useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import url from "@/constant/url";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 interface Form {
-  fullName?: string; // Use "fullName" to match the name attribute in the input
+  fullName?: string;
   file?: File;
   phone?: string;
   address?: string;
 }
 
-const DialogBox: React.FC = () => {
+const UpdateProfile: React.FC = () => {
   const formData = new FormData();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["token"]);
@@ -68,12 +68,7 @@ const DialogBox: React.FC = () => {
   };
 
   return (
-    <Dialog  >
-      <DialogTrigger asChild>
-        <Button variant="outline" className="w-[90%]">
-          Edit Profile
-        </Button>
-      </DialogTrigger>
+    <Dialog open>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
@@ -134,4 +129,4 @@ const DialogBox: React.FC = () => {
   );
 };
 
-export default DialogBox;
+export default UpdateProfile;
