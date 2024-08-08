@@ -27,7 +27,7 @@ const AccountSetting: React.FC = () => {
     }));
   };
 
-  if (user.email.length > 0)
+  if (user && user.email.length > 0)
     return (
       <>
         <div className="section flex overflow-x-clip">

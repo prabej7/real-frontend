@@ -26,6 +26,8 @@ const Rooms: React.FC = () => {
       await axios.post(`${url}delete-room`, { id: id });
     } catch (e) {
       console.log(e);
+    } finally {
+      setDeleting(false);
     }
   };
   return (
@@ -55,6 +57,7 @@ const Rooms: React.FC = () => {
                     <td>
                       <Button
                         className="bg-red-500"
+                        disabled={deleting}
                         onClick={() => handleDelete(room._id)}
                       >
                         <FaTrashAlt />
