@@ -55,7 +55,7 @@ const Verify: React.FC = () => {
     }
   };
 
-  if (user.email.length <= 0) return <Loading />;
+  if (user && user.email.length === 0) return <Loading />;
 
   return (
     <>
