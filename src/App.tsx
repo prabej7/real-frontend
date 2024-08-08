@@ -16,6 +16,7 @@ import AdminRegister from "./pages/admin/AdminRL/AdminRegister";
 import Message from "./pages/account/Messages";
 import Chat from "./pages/account/Chat";
 import ChatsAdmin from "./pages/admin/Chats";
+import HostelFullView from "./pages/general/HostelFullView";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route path="/admin/setting" element={<AdminSetting />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-register" element={<AdminRegister />} />
+        <Route path="/hostels/:id" element={<HostelFullView />} />
       </Routes>
     </>
   );

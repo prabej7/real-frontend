@@ -19,7 +19,7 @@ const HostelCard: React.FC<Props> = ({ description, id, img, title }) => {
         <div className="card-actions justify-end">
           <button
             className="btn btn-primary"
-            onClick={() => navigate(`/hostel/${id}`)}
+            onClick={() => navigate(`/hostels/${id}`)}
           >
             Take a tour
           </button>

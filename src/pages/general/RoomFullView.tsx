@@ -40,15 +40,6 @@ const RoomFullView: React.FC = () => {
           <MobileNav>
             <div>
               <h1 className="font-bold text-center text-xl">{room.address}</h1>
-              {/* <div className="mt-3">
-                <h2 className="font-medium">Desciption :</h2>
-                <p className="mt-3">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit
-                  numquam debitis rerum vero in assumenda nesciunt quaerat
-                  excepturi, fugit dignissimos perspiciatis similique tempora
-                  animi? Maiores dignissimos id ipsum quas voluptates?
-                </p>
-              </div> */}
               <h2 className="font-medium wi-[450px] text-left mt-3">
                 Galery :
               </h2>
@@ -105,11 +96,25 @@ const RoomFullView: React.FC = () => {
                   Facilities :
                 </h2>
                 <ul className="">
-                  <li>Single room</li>
-                  <li>Water faculties</li>
-                  <li>Maximum people 4</li>
-                  <li>Balcony</li>
-                  <li>Wi-fi</li>
+                  {room.noOfRooms && <li>Rooms: {room.noOfRooms}</li>}
+                  {room.flat && <li>Flat: ✅</li>}
+                  {room.balcony && <li>Balcony: ✅</li>}
+                  {room.maxPeople && (
+                    <li>Max poeple can stay: {room.maxPeople}</li>
+                  )}
+                  {room.waterFacility && <li>Water Facility ✅</li>}
+                  {room.waterTank && <li>Water Tank: ✅</li>}
+                  {room.wifi && <li>Wi-fi: ✅</li>}
+                  {room.furnished && <li>Furnished: ✅</li>}
+                  {room.noticePeriod && (
+                    <li>Notice Period: {room.noticePeriod}</li>
+                  )}
+                  {room.paymentmode && (
+                    <li>Payment mode: {room.paymentmode}</li>
+                  )}
+                  {room.restrictions && (
+                    <li>Restrictions: {room.restrictions}</li>
+                  )}
                 </ul>
               </div>
               <Button className="mb-12 w-[470px]">Book Now!</Button>

@@ -11,15 +11,14 @@ import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
 const Message: React.FC = () => {
-  const [cookie] = useCookies(["token"]);
   const [loading, setLoading] = useState<boolean>(true);
   const user = useUserContext();
   useEffect(() => {
     if (user && user.email.length > 0) {
-      console.log(user);
+      console.log();
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useAuth("account/messages");
   if (loading) return <div>Loading...</div>;
