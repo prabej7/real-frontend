@@ -17,7 +17,7 @@ import Message from "./pages/account/Messages";
 import Chat from "./pages/account/Chat";
 import ChatsAdmin from "./pages/admin/Chats";
 import HostelFullView from "./pages/general/HostelFullView";
-
+import Map from "./pages/general/Map";
 function App() {
   return (
     <>
@@ -39,6 +39,7 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin-register" element={<AdminRegister />} />
         <Route path="/hostels/:id" element={<HostelFullView />} />
+        <Route path="/map" element={<Map />} />
       </Routes>
     </>
   );

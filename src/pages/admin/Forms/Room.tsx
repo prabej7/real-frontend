@@ -10,6 +10,7 @@ import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MapDrawer from "@/components/ui/Map";
 const schema = z.object({
   noOfRooms: z.string(),
   maxPeople: z.string(),
@@ -103,6 +104,7 @@ const RoomForm: React.FC = () => {
       [name]: !checkBox[name],
     }));
   };
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <>
       <div className="">
@@ -203,14 +205,24 @@ const RoomForm: React.FC = () => {
                   {...register("address")}
                 />
               </li>
-              <li className=" flex flex-col gap-2">
-                Latitude
-                <Input placeholder="Lat" name="lat" {...register("lat")} />
-              </li>
-              <li className=" flex flex-col gap-2">
-                Longitude
-                <Input placeholder="lon" name="lon" {...register("lon")} />
-              </li>
+              <div className="">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setOpen(true)}
+                >
+                  Set loaction on map
+                </Button>
+                <MapDrawer isOpen={open} onClose={() => setOpen(false)} />
+                {/* <li className=" flex flex-col gap-2">
+                  Latitude
+                  <Input placeholder="Lat" name="lat" {...register("lat")} />
+                </li>
+                <li className=" flex flex-col gap-2">
+                  Longitude
+                  <Input placeholder="lon" name="lon" {...register("lon")} />
+                </li> */}
+              </div>
               <li className="flex flex-col gap-2">
                 <Label htmlFor="file" className="text-left">
                   Photos
