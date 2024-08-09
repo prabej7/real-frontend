@@ -11,28 +11,47 @@ import {
 } from "react";
 import { useCookies } from "react-cookie";
 
-export const UserContext = createContext<User | undefined>(undefined);
+interface ContextType {
+  user: User;
+  loading: boolean;
+  error: boolean;
+}
+
+export const UserContext = createContext<ContextType | undefined>(undefined);
 
 interface Props {
   children: ReactNode;
 }
 
 const UserContextProvide: React.FC<Props> = ({ children }) => {
-  const [userData, setUserData] = useState<User>({
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [user, setUserData] = useState<User>({
     email: "",
     _id: "",
     verified: false,
   });
   const [cookie] = useCookies(["token"]);
   useEffect(() => {
-    (async () => {
-      const response = await axios.post(`${url}user`, { token: cookie.token });
-      
-      setUserData(response.data);
-    })();
-  }, []);
+    if (cookie.token)
+      (async () => {
+        setLoading(true);
+        try {
+          const response = await axios.post(`${url}user`, {
+            token: cookie.token,
+          });
+          setUserData(response.data);
+        } catch (e) {
+          setError(true);
+        } finally {
+          setLoading(false);
+        }
+      })();
+  }, [cookie.token]);
   return (
-    <UserContext.Provider value={userData}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, loading, error }}>
+      {children}
+    </UserContext.Provider>
   );
 };
 

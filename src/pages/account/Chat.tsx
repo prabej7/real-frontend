@@ -11,6 +11,7 @@ import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import Message from "@/constant/types/message";
 import { io, Socket } from "socket.io-client";
+import Loading from "@/components/ui/Loading";
 
 export interface Msg {
   isAdmin?: boolean;
@@ -19,7 +20,7 @@ export interface Msg {
 }
 const Chat: React.FC = () => {
   const [allMessages, setMessage] = useState<Msg[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+
   const [cookie] = useCookies(["token"]);
   const [sending, setSending] = useState<boolean>(false);
   // const [socket, setSocket] = useState<Socket | null>(null);
@@ -33,7 +34,7 @@ const Chat: React.FC = () => {
   // }, [cookie.token]);
   const [text, setText] = useState<string>("");
   const { chatid } = useParams();
-  const user = useUserContext();
+  const { error, loading, user } = useUserContext();
   // useEffect(() => {
   //   const s = createSocket();
   //   setSocket(s);
@@ -51,12 +52,10 @@ const Chat: React.FC = () => {
   // }, [socket]);
   useEffect(() => {
     if (user && user.email.length > 0) {
-      setLoading(false);
       setMessage(user.messages.messages);
     }
   }, [user]);
-  if (loading) return <>Loading...</>;
-  const { messages } = user;
+  if (loading) return <Loading />;
   const handleSend = async () => {
     setSending(true);
     try {

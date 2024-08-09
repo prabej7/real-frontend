@@ -1,27 +1,16 @@
-import { Button } from "@/components/ui/button";
 import DesktopSection from "@/components/ui/DesktopSection";
 import Loading from "@/components/ui/Loading";
 import { MobileNav } from "@/components/ui/sideBar";
 
 import useAuth from "@/hooks/useAuth";
 import { useUserContext } from "@/Provider/UserContext";
-
-import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
 
 const Message: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const user = useUserContext();
-  useEffect(() => {
-    if (user && user.email.length > 0) {
-      console.log();
-      setLoading(false);
-    }
-  }, [user]);
+  const { user, error, loading } = useUserContext();
 
   useAuth("account/messages");
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
   if (user) {
     return (
       <>

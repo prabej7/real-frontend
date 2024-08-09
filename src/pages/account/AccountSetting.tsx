@@ -5,8 +5,6 @@ import { MobileNav } from "@/components/ui/sideBar";
 import useAuth from "@/hooks/useAuth";
 import { useUserContext } from "@/Provider/UserContext";
 
-import { ChangeEvent, useState } from "react";
-
 interface Form {
   fullName?: string;
   file?: File;
@@ -14,19 +12,9 @@ interface Form {
 
 const AccountSetting: React.FC = () => {
   useAuth("account/setting");
-  const user = useUserContext();
-  const [formData, setForm] = useState({
-    email: user.email,
-    fullName: user.fullName,
-  });
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const { user, error, loading } = useUserContext();
 
+  if (loading) return <Loading />;
   if (user && user.email.length > 0)
     return (
       <>

@@ -6,13 +6,12 @@ import { useUserContext } from "@/Provider/UserContext";
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Verify: React.FC = () => {
   const notify = (text: string) => toast.error(text);
-  const user = useUserContext();
+  const { user, loading, error } = useUserContext();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [cookie, setCookie, removeCookie] = useCookies(["token", "otp"]);
   const [userOTP, setOtp] = useState<string>("");
@@ -26,7 +25,7 @@ const Verify: React.FC = () => {
     })();
   }, []);
   useEffect(() => {
-    if (user && user.email.length > 0) {
+    if (!loading && user && user?.email.length > 0) {
       sendMail();
     }
   }, [user]);
@@ -54,8 +53,7 @@ const Verify: React.FC = () => {
       setLoading(false);
     }
   };
-
-  if (user && user.email.length === 0) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <>
