@@ -10,10 +10,12 @@ import url from "@/constant/url";
 import { useCookies } from "react-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MapDrawer from "@/components/ui/Map";
+import Location from "@/constant/types/location";
 const schema = z.object({
   address: z.string(),
-  lat: z.string(),
-  lon: z.string(),
+  lat: z.number(),
+  lon: z.number(),
 });
 interface CheckBox {
   food: boolean;
@@ -39,7 +41,7 @@ const HostelForm: React.FC = () => {
     success: (text: string) => toast.success(text),
     error: (text: string) => toast.error(text),
   };
-  const { register, handleSubmit, reset } = useForm<formField>({
+  const { register, handleSubmit, reset, setValue } = useForm<formField>({
     resolver: zodResolver(schema),
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -135,6 +137,13 @@ const HostelForm: React.FC = () => {
       [name]: !checkBox[name],
     }));
   };
+
+  const getSelectedLocation = (location: Location) => {
+    const { lat, lon } = location;
+    setValue("lat", lat);
+    setValue("lon", lon);
+  };
+
   return (
     <>
       <div className="">
@@ -237,6 +246,9 @@ const HostelForm: React.FC = () => {
                   {...register("address")}
                 />
               </li>
+              <div>
+                <MapDrawer onMapClick={getSelectedLocation} />
+              </div>
               <li className=" flex flex-col gap-2">
                 Latitude
                 <Input placeholder="Lat" name="lat" {...register("lat")} />

@@ -16,22 +16,29 @@ import axios from "axios";
 import { RiMapPinUserFill } from "react-icons/ri";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import L, { divIcon } from "leaflet";
+import { Icon } from "leaflet";
+import LocationUpdater from "@/components/map/LocationUpdater";
+import { useRoomContext } from "@/Provider/RoomsContext";
+import Loading from "@/components/ui/Loading";
+import { PiPath } from "react-icons/pi";
+import { FaFilter } from "react-icons/fa";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import RoutingFunction from "@/components/map/RoutingFunction";
+import Rooms from "@/constant/types/rooms";
+import RoomPopUp from "@/components/map/RoomPopUp";
+import Filter from "@/components/map/Filter";
+interface SelectedLocation {
+  lat: number;
+  lon: number;
+  isRouting: boolean;
+}
 
 const Map: React.FC = () => {
-  const LocationUpdater: React.FC<{
-    location: { lat: number; lng: number };
-  }> = ({ location }) => {
-    const map = useMap();
-
-    useEffect(() => {
-      if (location) {
-        map.flyTo(location, map.getZoom());
-      }
-    }, [location, map]);
-
-    return null;
-  };
   const [query, setQuery] = useState<string>("");
   const [searchLocation, setSearchLocation] = useState<Location>({
     lat: 27.7172,
@@ -41,6 +48,9 @@ const Map: React.FC = () => {
     lat: 27.7172,
     lon: 85.324,
   });
+
+  const [selectedLocation, setSelectedLocation] =
+    useState<SelectedLocation | null>(null);
 
   useEffect(() => {
     if (navigator) {
@@ -73,79 +83,112 @@ const Map: React.FC = () => {
   const handleSelfLoction = () => {
     setSearchLocation(userLocation);
   };
-  const RoutingFunction: React.FC<{
-    start: L.LatLngExpression;
-    end: L.LatLngExpression;
-  }> = ({ start, end }) => {
-    const map = useMap();
 
-    useEffect(() => {
-      if (start && end) {
-        // Create and add routing control
-        const control = L.Routing.control({
-          waypoints: [L.latLng(start), L.latLng(end)],
-          lineOptions: {
-            extendToWaypoints: true,
-            missingRouteTolerance: 1,
-          },
-        }).addTo(map);
-
-        // Add custom markers manually
-        L.marker(start).addTo(map);
-        L.marker(end).addTo(map);
-
-        return () => {
-          map.removeControl(control);
-        };
-      }
-    }, [start, end, map]);
-
-    return null;
+  const handleRouting = (room: Rooms) => {
+    if (!selectedLocation?.isRouting) {
+      return setSelectedLocation({
+        ...room.coord,
+        isRouting: true,
+      });
+    }
+    setSelectedLocation({
+      ...room.coord,
+      isRouting: false,
+    });
   };
 
-  return (
-    <div className="relative">
-      <div className="absolute z-10 flex gap-6 lg:top-6 lg:left-[35%] top-6 px-6">
-        <Input
-          className="bg-white"
-          placeholder="Search city"
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Button onClick={handleSearch}>Search</Button>
-      </div>
-      <div
-        className="bg-slate-900 h-16 w-16 cursor-pointer rounded-full absolute z-10 lg:bottom-24 lg:right-24 flex justify-center items-center bottom-12 right-6"
-        onClick={handleSelfLoction}
-      >
-        <RiMapPinUserFill className="text-white text-4xl" />
-      </div>
-      <MapContainer
-        center={
-          userLocation
-            ? [userLocation.lat, userLocation.lon]
-            : [searchLocation.lat, searchLocation.lon]
-        }
-        zoom={13}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={[userLocation.lat, userLocation.lon]}>
-          <Popup>You</Popup>
-        </Marker>
-        <LocationUpdater
-          location={{ lat: searchLocation.lat, lng: searchLocation.lon }}
-        />
-        {userLocation.lat !== searchLocation.lat && (
-          <RoutingFunction
-            start={{ lat: userLocation.lat, lng: userLocation.lon }}
-            end={{ lat: searchLocation.lat, lng: searchLocation.lon }}
+  const { loading, rooms } = useRoomContext();
+  if (loading) return <Loading />;
+
+  if (rooms instanceof Array)
+    return (
+      <div className="relative h-screen w-screen flex  justify-center">
+        <div className="absolute z-10 flex flex-col">
+          <div className="w-screen flex gap-3 sm:px-[500px] 2xl:px-[700px] pt-6 px-12">
+            <Input
+              className="bg-white"
+              placeholder="Search city"
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <Button onClick={handleSearch}>Search</Button>
+          </div>
+        </div>
+        <Filter />
+        <div
+          className="bg-slate-900 h-16 w-16 cursor-pointer rounded-full absolute z-10 lg:bottom-24 lg:right-24 flex justify-center items-center bottom-12 right-6"
+          onClick={handleSelfLoction}
+        >
+          <RiMapPinUserFill className="text-white text-4xl" />
+        </div>
+        <MapContainer
+          center={
+            userLocation
+              ? [userLocation.lat, userLocation.lon]
+              : [searchLocation.lat, searchLocation.lon]
+          }
+          zoom={13}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        )}
-      </MapContainer>
-    </div>
-  );
+          <Marker position={[userLocation.lat, userLocation.lon]}>
+            <Popup>You</Popup>
+          </Marker>
+          {rooms.map((room) => {
+            return <RoomPopUp room={room} onRouting={handleRouting} />;
+          })}
+
+          {/* <Popup>
+                  <div className="flex flex-col gap-3">
+                    <h2 className="font-bold">{room.address}</h2>
+                    <div>
+                      <img className="rounded" src={`${room.img[0]}`} />
+                    </div>
+                    <div className="flex gap-3">
+                      <Button className="">Details</Button>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Button
+                              variant="secondary"
+                              onClick={() => {
+                                if (!selectedLocation?.isRouting) {
+                                  return setSelectedLocation({
+                                    ...room.coord,
+                                    isRouting: true,
+                                  });
+                                }
+                                setSelectedLocation({
+                                  ...room.coord,
+                                  isRouting: false,
+                                });
+                              }}
+                            >
+                              <PiPath />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-white text-slate-950 py-0 shadow-md">
+                            <p>Show path</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </div>
+                </Popup> */}
+
+          <LocationUpdater
+            location={{ lat: searchLocation.lat, lng: searchLocation.lon }}
+          />
+          {selectedLocation && selectedLocation.isRouting && (
+            <RoutingFunction
+              start={{ lat: userLocation.lat, lng: userLocation.lon }}
+              end={{ lat: selectedLocation.lat, lng: selectedLocation.lon }}
+            />
+          )}
+        </MapContainer>
+      </div>
+    );
 };
 
 export default Map;

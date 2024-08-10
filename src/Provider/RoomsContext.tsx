@@ -13,21 +13,37 @@ interface Props {
   children: ReactNode;
 }
 
-export const RoomContext = createContext<Rooms[] | undefined>(undefined);
+interface ContextType {
+  rooms: Rooms[];
+  loading: boolean;
+  error: boolean;
+}
+
+export const RoomContext = createContext<ContextType | undefined>(undefined);
 
 const RoomProvider: React.FC<Props> = ({ children }) => {
-  const [data, setData] = useState<Rooms[]>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [rooms, setData] = useState<Rooms[]>();
   useEffect(() => {
     (async () => {
+      setError(false);
+      setLoading(true);
       try {
         const response = await axios.get(`${url}rooms`);
         setData(response.data);
       } catch (e) {
-        console.error(e);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
-  return <RoomContext.Provider value={data}>{children}</RoomContext.Provider>;
+  return (
+    <RoomContext.Provider value={{ error, loading, rooms }}>
+      {children}
+    </RoomContext.Provider>
+  );
 };
 
 export default RoomProvider;

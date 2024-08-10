@@ -17,7 +17,7 @@ const RoomFullView: React.FC = () => {
   };
   const { id } = useParams();
   const [cookie] = useCookies(["token"]);
-  const rooms = useRoomContext();
+  const { rooms, loading } = useRoomContext();
   const navigate = useNavigate();
   const handleClick = async (id: string) => {
     const formData = {
@@ -32,6 +32,7 @@ const RoomFullView: React.FC = () => {
       }
     } catch (e) {}
   };
+  if (loading) return <Loading />;
   if (rooms) {
     const room = rooms.find((room) => room._id == id);
     return (

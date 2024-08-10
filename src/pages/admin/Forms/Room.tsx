@@ -11,6 +11,7 @@ import { useCookies } from "react-cookie";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MapDrawer from "@/components/ui/Map";
+import Location from "@/constant/types/location";
 const schema = z.object({
   noOfRooms: z.string(),
   maxPeople: z.string(),
@@ -19,8 +20,8 @@ const schema = z.object({
   restrictions: z.string(),
   securityDeposite: z.string(),
   address: z.string(),
-  lat: z.string(),
-  lon: z.string(),
+  lat: z.number(),
+  lon: z.number(),
 });
 interface CheckBox {
   flat: boolean;
@@ -48,7 +49,7 @@ const RoomForm: React.FC = () => {
     waterTank: false,
     wifi: false,
   });
-  const { register, handleSubmit, reset } = useForm<formField>({
+  const { register, handleSubmit, reset, setValue } = useForm<formField>({
     resolver: zodResolver(schema),
   });
   const onSubmit = async (formData: formField) => {
@@ -104,7 +105,12 @@ const RoomForm: React.FC = () => {
       [name]: !checkBox[name],
     }));
   };
-  const [open, setOpen] = useState<boolean>(false);
+  
+  const getSelectedLocation = (location: Location) => {
+    setValue("lat", location.lat);
+    setValue("lon", location.lon);
+  };
+
   return (
     <>
       <div className="">
@@ -206,22 +212,24 @@ const RoomForm: React.FC = () => {
                 />
               </li>
               <div className="">
-                <Button
+                {/* <Button
                   variant="outline"
                   type="button"
                   onClick={() => setOpen(true)}
                 >
                   Set loaction on map
-                </Button>
-                <MapDrawer isOpen={open} onClose={() => setOpen(false)} />
-                {/* <li className=" flex flex-col gap-2">
-                  Latitude
-                  <Input placeholder="Lat" name="lat" {...register("lat")} />
-                </li>
-                <li className=" flex flex-col gap-2">
-                  Longitude
-                  <Input placeholder="lon" name="lon" {...register("lon")} />
-                </li> */}
+                </Button> */}
+                <MapDrawer onMapClick={getSelectedLocation} />
+                <div className="flex gap-6">
+                  <li className=" flex flex-col gap-2">
+                    Latitude
+                    <Input placeholder="Lat" name="lat" {...register("lat")} />
+                  </li>
+                  <li className=" flex flex-col gap-2">
+                    Longitude
+                    <Input placeholder="lon" name="lon" {...register("lon")} />
+                  </li>
+                </div>
               </div>
               <li className="flex flex-col gap-2">
                 <Label htmlFor="file" className="text-left">

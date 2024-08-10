@@ -1,3 +1,5 @@
+import Location from "./location";
+
 interface Rooms {
   _id: string;
   flat?: boolean;
