@@ -23,6 +23,7 @@ import RoutingFunction from "@/components/map/RoutingFunction";
 import Rooms from "@/constant/types/rooms";
 import RoomPopUp from "@/components/map/RoomPopUp";
 import Filter from "@/components/map/Filter";
+import apiKey from "@/constant/api";
 
 interface SelectedLocation {
   lat: number;
@@ -65,9 +66,7 @@ const Map: React.FC = () => {
   const handleSearch = async () => {
     try {
       const { data } = await axios.get(
-        `https://api.geoapify.com/v1/geocode/search?city=${query}&apiKey=${
-          import.meta.env.VITE_API
-        }`
+        `https://api.geoapify.com/v1/geocode/search?city=${query}&apiKey=${apiKey}`
       );
 
       setSearchLocation({
