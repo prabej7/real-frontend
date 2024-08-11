@@ -11,27 +11,19 @@ import React, { useEffect, useState } from "react";
 import Location from "@/constant/types/location";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import apiKey from "@/constant/api";
 import axios from "axios";
 import { RiMapPinUserFill } from "react-icons/ri";
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import { Icon } from "leaflet";
 import LocationUpdater from "@/components/map/LocationUpdater";
 import { useRoomContext } from "@/Provider/RoomsContext";
 import Loading from "@/components/ui/Loading";
-import { PiPath } from "react-icons/pi";
-import { FaFilter } from "react-icons/fa";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import Alert from "@/components/user/Alert";
 import RoutingFunction from "@/components/map/RoutingFunction";
 import Rooms from "@/constant/types/rooms";
 import RoomPopUp from "@/components/map/RoomPopUp";
 import Filter from "@/components/map/Filter";
+
 interface SelectedLocation {
   lat: number;
   lon: number;
@@ -39,6 +31,7 @@ interface SelectedLocation {
 }
 
 const Map: React.FC = () => {
+  const { ToastContainer, notify } = Alert();
   const [query, setQuery] = useState<string>("");
   const [searchLocation, setSearchLocation] = useState<Location>({
     lat: 27.7172,
@@ -72,11 +65,17 @@ const Map: React.FC = () => {
   const handleSearch = async () => {
     try {
       const { data } = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
+        `https://api.geoapify.com/v1/geocode/search?city=${query}&apiKey=${
+          import.meta.env.VITE_MAP_API
+        }`
       );
 
-      setSearchLocation({ lat: data[0].lat, lon: data[0].lon });
+      setSearchLocation({
+        lat: data.features[0].properties.lat,
+        lon: data.features[0].properties.lon,
+      });
     } catch (e) {
+      notify.error("Invalid city name");
     } finally {
     }
   };
@@ -139,44 +138,6 @@ const Map: React.FC = () => {
             return <RoomPopUp room={room} onRouting={handleRouting} />;
           })}
 
-          {/* <Popup>
-                  <div className="flex flex-col gap-3">
-                    <h2 className="font-bold">{room.address}</h2>
-                    <div>
-                      <img className="rounded" src={`${room.img[0]}`} />
-                    </div>
-                    <div className="flex gap-3">
-                      <Button className="">Details</Button>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Button
-                              variant="secondary"
-                              onClick={() => {
-                                if (!selectedLocation?.isRouting) {
-                                  return setSelectedLocation({
-                                    ...room.coord,
-                                    isRouting: true,
-                                  });
-                                }
-                                setSelectedLocation({
-                                  ...room.coord,
-                                  isRouting: false,
-                                });
-                              }}
-                            >
-                              <PiPath />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-white text-slate-950 py-0 shadow-md">
-                            <p>Show path</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </div>
-                </Popup> */}
-
           <LocationUpdater
             location={{ lat: searchLocation.lat, lng: searchLocation.lon }}
           />
@@ -187,6 +148,7 @@ const Map: React.FC = () => {
             />
           )}
         </MapContainer>
+        <ToastContainer />
       </div>
     );
 };
