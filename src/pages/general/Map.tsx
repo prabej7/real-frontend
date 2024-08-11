@@ -66,7 +66,7 @@ const Map: React.FC = () => {
     try {
       const { data } = await axios.get(
         `https://api.geoapify.com/v1/geocode/search?city=${query}&apiKey=${
-          import.meta.env.VITE_MAP_API
+          import.meta.env.VITE_API
         }`
       );
 
