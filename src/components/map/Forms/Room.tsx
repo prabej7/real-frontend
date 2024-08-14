@@ -1,5 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import FilteredItems from "@/components/user/FilteredBox";
+import Location from "@/constant/types/location";
+import Rooms from "@/constant/types/rooms";
+import { useRoomContext } from "@/Provider/RoomsContext";
 import { ChangeEvent, useState } from "react";
 
 interface CheckBox {
@@ -17,7 +21,12 @@ interface CheckBox {
   securityDeposite?: string;
 }
 
-const RoomForm: React.FC = () => {
+interface Props {
+  onFilter: (rooms: Rooms[]) => void;
+}
+
+const RoomForm: React.FC<Props> = ({ onFilter }) => {
+  const { error, loading, rooms } = useRoomContext();
   const [priceRange, setPriceRange] = useState({
     g: 0,
     l: 0,
@@ -47,11 +56,24 @@ const RoomForm: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    console.log({
-      ...priceRange,
-      ...selectedOptions,
+    const filteredRoom = rooms.filter((room) => {
+      const meetsPriceCriteria =
+        room.price >= priceRange.g && room.price <= priceRange.l;
+      const meetsOptionCriteria = Object.keys(selectedOptions).every((key) => {
+        if (selectedOptions[key as keyof CheckBox]) {
+          return room[key as keyof CheckBox];
+        }
+        return true;
+      });
+
+      return meetsPriceCriteria && meetsOptionCriteria;
     });
+
+    if (filteredRoom.length >= 0) {
+      onFilter(filteredRoom);
+    }
   };
+
   return (
     <div>
       <p className="font-medium">Price</p>

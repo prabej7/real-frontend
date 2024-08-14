@@ -111,7 +111,11 @@ const Map: React.FC = () => {
             <Button onClick={handleSearch}>Search</Button>
           </div>
         </div>
-        <Filter />
+        <Filter
+          onFilter={(rooms: Rooms[]) => {
+            console.log(rooms);
+          }}
+        />
         <div
           className="bg-slate-900 h-16 w-16 cursor-pointer rounded-full absolute z-10 lg:bottom-24 lg:right-24 flex justify-center items-center bottom-12 right-6"
           onClick={handleSelfLoction}

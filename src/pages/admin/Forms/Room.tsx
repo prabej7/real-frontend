@@ -13,15 +13,32 @@ import "react-toastify/dist/ReactToastify.css";
 import MapDrawer from "@/components/ui/Map";
 import Location from "@/constant/types/location";
 const schema = z.object({
-  noOfRooms: z.string(),
-  maxPeople: z.string(),
-  paymentmode: z.string(),
-  noticePeriod: z.string(),
+  noOfRooms: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  maxPeople: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  paymentmode: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  noticePeriod: z.string().min(1, {
+    message: "Field is required.",
+  }),
   restrictions: z.string(),
-  securityDeposite: z.string(),
-  address: z.string(),
-  lat: z.number(),
-  lon: z.number(),
+  securityDeposite: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  address: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  lat: z.number().min(1, {
+    message: "Field is required.",
+  }),
+  lon: z.number().min(1, {
+    message: "Field is required.",
+  }),
+  price: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number()),
 });
 interface CheckBox {
   flat: boolean;
@@ -49,7 +66,13 @@ const RoomForm: React.FC = () => {
     waterTank: false,
     wifi: false,
   });
-  const { register, handleSubmit, reset, setValue } = useForm<formField>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<formField>({
     resolver: zodResolver(schema),
   });
   const onSubmit = async (formData: formField) => {
@@ -105,7 +128,7 @@ const RoomForm: React.FC = () => {
       [name]: !checkBox[name],
     }));
   };
-  
+
   const getSelectedLocation = (location: Location) => {
     setValue("lat", location.lat);
     setValue("lon", location.lon);
@@ -126,6 +149,11 @@ const RoomForm: React.FC = () => {
                   name="noOfRooms"
                   {...register("noOfRooms")}
                 />
+                {errors.noOfRooms && (
+                  <p className="text-red-500 text-sm">
+                    {errors.noOfRooms.message}
+                  </p>
+                )}
               </div>
               <li className=" flex  gap-2">
                 Flat
@@ -146,6 +174,11 @@ const RoomForm: React.FC = () => {
                   name="maxPeople"
                   {...register("maxPeople")}
                 />
+                {errors.maxPeople && (
+                  <p className="text-red-500 text-sm">
+                    {errors.maxPeople.message}
+                  </p>
+                )}
               </li>
               <li className=" flex flex-col gap-2">
                 Payment mode
@@ -154,6 +187,11 @@ const RoomForm: React.FC = () => {
                   name="paymentmode"
                   {...register("paymentmode")}
                 />
+                {errors.paymentmode && (
+                  <p className="text-red-500 text-sm">
+                    {errors.paymentmode.message}
+                  </p>
+                )}
               </li>
               <li className=" flex  gap-2">
                 Furnished
@@ -170,6 +208,11 @@ const RoomForm: React.FC = () => {
                   name="securityDeposite"
                   {...register("securityDeposite")}
                 />
+                {errors.securityDeposite && (
+                  <p className="text-red-500 text-sm">
+                    {errors.securityDeposite.message}
+                  </p>
+                )}
               </li>
               <li className=" flex flex-col gap-2">
                 Notice priod
@@ -178,6 +221,11 @@ const RoomForm: React.FC = () => {
                   name="noticePeriod"
                   {...register("noticePeriod")}
                 />
+                {errors.noticePeriod && (
+                  <p className="text-red-500 text-sm">
+                    {errors.noticePeriod.message}
+                  </p>
+                )}
               </li>
               <li className=" flex  gap-2">
                 Balcony
@@ -210,6 +258,11 @@ const RoomForm: React.FC = () => {
                   name="address"
                   {...register("address")}
                 />
+                {errors.address && (
+                  <p className="text-red-500 text-sm">
+                    {errors.address.message}
+                  </p>
+                )}
               </li>
               <div className="">
                 {/* <Button
@@ -224,10 +277,20 @@ const RoomForm: React.FC = () => {
                   <li className=" flex flex-col gap-2">
                     Latitude
                     <Input placeholder="Lat" name="lat" {...register("lat")} />
+                    {errors.lat && (
+                      <p className="text-red-500 text-sm">
+                        {errors.lat.message}
+                      </p>
+                    )}
                   </li>
                   <li className=" flex flex-col gap-2">
                     Longitude
                     <Input placeholder="lon" name="lon" {...register("lon")} />
+                    {errors.lon && (
+                      <p className="text-red-500 text-sm">
+                        {errors.lon.message}
+                      </p>
+                    )}
                   </li>
                 </div>
               </div>
@@ -242,6 +305,20 @@ const RoomForm: React.FC = () => {
                   multiple
                   onChange={handleCheck}
                 />
+              </li>
+              <li className="flex flex-col gap-2">
+                <Label htmlFor="file" className="text-left">
+                  Price
+                </Label>
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  name="price"
+                  {...register("price")}
+                />
+                {errors.price && (
+                  <p className="text-red-500 text-sm">{errors.price.message}</p>
+                )}
               </li>
               <Button type="submit" disabled={loading}>
                 {loading ? (

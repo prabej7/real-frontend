@@ -91,10 +91,13 @@ const MapDrawer: React.FC<Props> = ({ onMapClick }) => {
   const handleSearch = async () => {
     try {
       const { data } = await axios.get(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`
+        `https://api.geoapify.com/v1/geocode/search?city=${query}&apiKey=${apiKey}`
       );
 
-      setSearchLocation({ lat: data[0].lat, lon: data[0].lon });
+      setSearchLocation({
+        lat: data.features[0].properties.lat,
+        lon: data.features[0].properties.lon,
+      });
     } catch (e) {
     } finally {
     }

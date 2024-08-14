@@ -8,15 +8,19 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
 import { FaFilter } from "react-icons/fa";
-import { Input } from "../ui/input";
 import { useState } from "react";
 import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/HostelForm";
+import Rooms from "@/constant/types/rooms";
 
-const Filter: React.FC = () => {
+interface Props {
+  onFilter: (rooms: Rooms[]) => void;
+}
+
+const Filter: React.FC<Props> = ({ onFilter }) => {
   const [selected, setSelected] = useState<string>("Room");
   return (
-    <Sheet  >
+    <Sheet>
       <SheetTrigger>
         <Button
           variant="outline"
@@ -28,8 +32,8 @@ const Filter: React.FC = () => {
       </SheetTrigger>
       <SheetContent side="right">
         <SheetHeader>
-          <SheetTitle className="text-left" >Filter</SheetTitle>
-          <SheetDescription className="text-left" >
+          <SheetTitle className="text-left">Filter</SheetTitle>
+          <SheetDescription className="text-left">
             By price, location, and facilities.
             <div className="text-slate-950 mt-6 flex flex-col gap-6">
               <div className="flex flex-col gap-3">
@@ -44,7 +48,9 @@ const Filter: React.FC = () => {
                 </select>
               </div>
               <div>
-                {selected == "Room" && <RoomForm />}
+                {selected == "Room" && (
+                  <RoomForm onFilter={(rooms: Rooms[]) => onFilter(rooms)} />
+                )}
                 {selected == "Hostel" && <HostelForm />}
               </div>
             </div>
