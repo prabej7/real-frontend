@@ -7,7 +7,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaLeaf } from "react-icons/fa";
 import { useState } from "react";
 import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/HostelForm";
@@ -15,12 +15,15 @@ import Rooms from "@/constant/types/rooms";
 
 interface Props {
   onFilter: (rooms: Rooms[]) => void;
+  onClose?: () => void;
+  open?: boolean;
 }
 
-const Filter: React.FC<Props> = ({ onFilter }) => {
+const Filter: React.FC<Props> = ({ onFilter, onClose, open }) => {
   const [selected, setSelected] = useState<string>("Room");
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={onClose} open={open}>
       <SheetTrigger>
         <Button
           variant="outline"

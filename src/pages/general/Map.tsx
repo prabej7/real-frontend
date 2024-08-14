@@ -24,6 +24,7 @@ import Rooms from "@/constant/types/rooms";
 import RoomPopUp from "@/components/map/RoomPopUp";
 import Filter from "@/components/map/Filter";
 import apiKey from "@/constant/api";
+import FilteredItems from "@/components/user/FilteredBox";
 
 interface SelectedLocation {
   lat: number;
@@ -32,6 +33,9 @@ interface SelectedLocation {
 }
 
 const Map: React.FC = () => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [allRooms, setRooms] = useState<Rooms[]>();
   const { ToastContainer, notify } = Alert();
   const [query, setQuery] = useState<string>("");
   const [searchLocation, setSearchLocation] = useState<Location>({
@@ -95,12 +99,29 @@ const Map: React.FC = () => {
     });
   };
 
+  const onItemClick = (coords: Location) => {
+    setOpen(false);
+    setSearchLocation({
+      lat: coords.lat,
+      lon: coords.lon,
+    });
+    setFilterOpen(false);
+  };
+
   const { loading, rooms } = useRoomContext();
   if (loading) return <Loading />;
 
   if (rooms instanceof Array)
     return (
       <div className="relative h-screen w-screen flex  justify-center">
+        {allRooms && (
+          <FilteredItems
+            items={allRooms}
+            onItemClick={onItemClick}
+            open={open}
+            onClose={() => setOpen(false)}
+          />
+        )}
         <div className="absolute z-10 flex flex-col">
           <div className="w-screen flex gap-3 sm:px-[500px] 2xl:px-[700px] pt-6 px-12">
             <Input
@@ -112,8 +133,13 @@ const Map: React.FC = () => {
           </div>
         </div>
         <Filter
+          onClose={() => setFilterOpen(!filterOpen)}
+          open={filterOpen}
           onFilter={(rooms: Rooms[]) => {
-            console.log(rooms);
+            if (Array.isArray(rooms) && rooms.length !== 0) {
+              setOpen(true);
+              setRooms(rooms);
+            }
           }}
         />
         <div

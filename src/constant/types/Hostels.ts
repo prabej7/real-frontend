@@ -18,6 +18,7 @@ interface Hostel {
   img?: string[];
   address?: string;
   coord?: Location;
+  price?: number;
 }
 
 export default Hostel;

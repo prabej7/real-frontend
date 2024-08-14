@@ -13,9 +13,16 @@ import "react-toastify/dist/ReactToastify.css";
 import MapDrawer from "@/components/ui/Map";
 import Location from "@/constant/types/location";
 const schema = z.object({
-  address: z.string(),
-  lat: z.number(),
-  lon: z.number(),
+  address: z.string().min(1, {
+    message: "Field is required.",
+  }),
+  lat: z.number().min(1, {
+    message: "Field is required.",
+  }),
+  lon: z.number().min(1, {
+    message: "Field is required.",
+  }),
+  price: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number()),
 });
 interface CheckBox {
   food: boolean;
@@ -41,7 +48,13 @@ const HostelForm: React.FC = () => {
     success: (text: string) => toast.success(text),
     error: (text: string) => toast.error(text),
   };
-  const { register, handleSubmit, reset, setValue } = useForm<formField>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<formField>({
     resolver: zodResolver(schema),
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -226,18 +239,7 @@ const HostelForm: React.FC = () => {
                   checked={checkBox.postPayment}
                 />
               </li>
-              <li className="flex flex-col gap-2">
-                <Label htmlFor="file" className="text-left">
-                  Photos
-                </Label>
-                <input
-                  id="file"
-                  type="file"
-                  className="file-input w-full max-w-xs col-span-3"
-                  multiple
-                  onChange={handleCheck}
-                />
-              </li>
+              
               <li className=" flex flex-col gap-2">
                 Address
                 <Input
@@ -252,10 +254,42 @@ const HostelForm: React.FC = () => {
               <li className=" flex flex-col gap-2">
                 Latitude
                 <Input placeholder="Lat" name="lat" {...register("lat")} />
+                {errors.lat && (
+                  <p className="text-red-500 text-sm">{errors.lat.message}</p>
+                )}
               </li>
               <li className=" flex flex-col gap-2">
                 Longitude
                 <Input placeholder="lon" name="lon" {...register("lon")} />
+                {errors.lon && (
+                  <p className="text-red-500 text-sm">{errors.lon.message}</p>
+                )}
+              </li>
+              <li className="flex flex-col gap-2">
+                <Label htmlFor="file" className="text-left">
+                  Price
+                </Label>
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  name="price"
+                  {...register("price")}
+                />
+                {errors.price && (
+                  <p className="text-red-500 text-sm">{errors.price.message}</p>
+                )}
+              </li>
+              <li className="flex flex-col gap-2">
+                <Label htmlFor="file" className="text-left">
+                  Photos
+                </Label>
+                <input
+                  id="file"
+                  type="file"
+                  className="file-input w-full max-w-xs col-span-3"
+                  multiple
+                  onChange={handleCheck}
+                />
               </li>
               <Button type="submit" disabled={loading}>
                 {loading ? (

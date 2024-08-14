@@ -44,6 +44,7 @@ const HostelForm: React.FC = () => {
   });
   const handlePrice = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
+    console.log(e);
     setPriceRange((prev) => ({
       ...prev,
       [name]: Number(value),

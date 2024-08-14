@@ -30,9 +30,10 @@ const HostelProvider: React.FC<ProviderProps> = ({ children }) => {
       setLoading(true);
       try {
         const { data } = await axios.get(`${url}get-hostels`);
-        
+        console.log(data);
         setHostels(data);
       } catch (e) {
+        console.log(e);
         setError(true);
       } finally {
         setLoading(false);
