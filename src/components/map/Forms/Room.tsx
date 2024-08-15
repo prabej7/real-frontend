@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Alert from "@/components/user/Alert";
 import FilteredItems from "@/components/user/FilteredBox";
+import apiKey from "@/constant/api";
 import Location from "@/constant/types/location";
 import Rooms from "@/constant/types/rooms";
 import { useRoomContext } from "@/Provider/RoomsContext";
-import { ChangeEvent, useState } from "react";
+import axios from "axios";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface CheckBox {
   flat?: boolean;
@@ -26,7 +29,13 @@ interface Props {
 }
 
 const RoomForm: React.FC<Props> = ({ onFilter }) => {
+  const { ToastContainer, notify } = Alert();
   const { error, loading, rooms } = useRoomContext();
+  const [locationSelect, setLocation] = useState<string>("Near me");
+  const [location, setUserLocation] = useState<Location>({
+    lat: 27.7172,
+    lon: 85.324,
+  });
   const [priceRange, setPriceRange] = useState({
     g: 0,
     l: 0,
@@ -39,6 +48,20 @@ const RoomForm: React.FC<Props> = ({ onFilter }) => {
     waterTank: false,
     wifi: false,
   });
+
+  useEffect(() => {
+    if (navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (error) => {}
+      );
+    }
+  }, []);
   const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;
     setSelected((prev) => ({
@@ -54,28 +77,54 @@ const RoomForm: React.FC<Props> = ({ onFilter }) => {
       [name]: Number(value),
     }));
   };
-
+  const locationSelectHandle = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    if (value == "Near me") {
+      const { data } = await axios.get(
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${location.lat}&lon=${location.lon}&apiKey=${apiKey}`
+      );
+      setLocation(data.features[0].properties.city);
+    } else {
+      setLocation(value);
+    }
+  };
   const handleSubmit = () => {
-    const filteredRoom = rooms.filter((room) => {
+    const filteredRooms = rooms.filter((room) => {
+      const meetsLocationCriteria =
+        room.city === locationSelect || locationSelect === "All";
+
       const meetsPriceCriteria =
         room.price >= priceRange.g && room.price <= priceRange.l;
+
       const meetsOptionCriteria = Object.keys(selectedOptions).every((key) => {
-        if (selectedOptions[key as keyof CheckBox]) {
-          return room[key as keyof CheckBox];
+        if (selectedOptions[key]) {
+          return room[key] === selectedOptions[key];
         }
         return true;
       });
 
-      return meetsPriceCriteria && meetsOptionCriteria;
+      return meetsLocationCriteria && meetsPriceCriteria && meetsOptionCriteria;
     });
 
-    if (filteredRoom.length >= 0) {
-      onFilter(filteredRoom);
+    if (filteredRooms.length > 0) {
+      onFilter(filteredRooms);
+    } else {
+      notify.info("No Rooms Found!");
     }
   };
 
   return (
     <div>
+      <p className="font-medium mb-3">Location</p>
+      <div className="flex gap-3 mb-3">
+        <select
+          className="select select-bordered w-full max-w-xs"
+          onChange={locationSelectHandle}
+        >
+          <option selected>Near me</option>
+          <option>All</option>
+        </select>
+      </div>
       <p className="font-medium">Price</p>
       <div className="flex gap-3">
         <div className="flex flex-col gap-3">
@@ -87,7 +136,7 @@ const RoomForm: React.FC<Props> = ({ onFilter }) => {
           <Input placeholder="eg. 20000" name="l" onChange={handlePrice} />
         </div>
       </div>
-      <div className="flex flex-col gap-3 mt-6">
+      <div className="flex flex-col mt-3 gap-1">
         <p className="font-medium">Facilities</p>
         <li className=" flex justify-between">
           Flat
@@ -119,6 +168,7 @@ const RoomForm: React.FC<Props> = ({ onFilter }) => {
       <Button className="mt-6 w-full" onClick={handleSubmit}>
         Search
       </Button>
+      <ToastContainer />
     </div>
   );
 };

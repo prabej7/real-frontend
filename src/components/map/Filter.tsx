@@ -12,14 +12,21 @@ import { useState } from "react";
 import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/HostelForm";
 import Rooms from "@/constant/types/rooms";
+import Hostel from "@/constant/types/Hostels";
 
 interface Props {
   onFilter: (rooms: Rooms[]) => void;
+  onFilterHostel: (hostel: Hostel[]) => void;
   onClose?: () => void;
   open?: boolean;
 }
 
-const Filter: React.FC<Props> = ({ onFilter, onClose, open }) => {
+const Filter: React.FC<Props> = ({
+  onFilter,
+  onClose,
+  open,
+  onFilterHostel,
+}) => {
   const [selected, setSelected] = useState<string>("Room");
 
   return (
@@ -27,7 +34,7 @@ const Filter: React.FC<Props> = ({ onFilter, onClose, open }) => {
       <SheetTrigger>
         <Button
           variant="outline"
-          className="absolute sm:top-6  sm:right-6 top-16 sm:w-24 w-[185px] sm:mr-6 mr-[90px] z-10 sm:flex gap-1 "
+          className="absolute z-10 top-[70px]  left-[245px] 2xl:top-[20px] 2xl:left-[1700px] xl:top-[20px] xl:left-[1200px] xl:w-24"
         >
           <FaFilter />
           Filter
@@ -54,7 +61,11 @@ const Filter: React.FC<Props> = ({ onFilter, onClose, open }) => {
                 {selected == "Room" && (
                   <RoomForm onFilter={(rooms: Rooms[]) => onFilter(rooms)} />
                 )}
-                {selected == "Hostel" && <HostelForm />}
+                {selected == "Hostel" && (
+                  <HostelForm
+                    onFilter={(hostel: Hostel[]) => onFilterHostel(hostel)}
+                  />
+                )}
               </div>
             </div>
           </SheetDescription>

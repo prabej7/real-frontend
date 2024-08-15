@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MapDrawer from "@/components/ui/Map";
 import Location from "@/constant/types/location";
+import apiKey from "@/constant/api";
 const schema = z.object({
   noOfRooms: z.string().min(1, {
     message: "Field is required.",
@@ -36,6 +37,9 @@ const schema = z.object({
     message: "Field is required.",
   }),
   lon: z.number().min(1, {
+    message: "Field is required.",
+  }),
+  city: z.string().min(1, {
     message: "Field is required.",
   }),
   price: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number()),
@@ -129,7 +133,13 @@ const RoomForm: React.FC = () => {
     }));
   };
 
-  const getSelectedLocation = (location: Location) => {
+  const getSelectedLocation = async (location: Location) => {
+    const { data } = await axios.get(
+      `https://api.geoapify.com/v1/geocode/reverse?lat=${location.lat}&lon=${location.lon}&apiKey=${apiKey}`
+    );
+
+    setValue("city", data.features[0].properties.city);
+    setValue("address", data.features[0].properties.address_line1);
     setValue("lat", location.lat);
     setValue("lon", location.lon);
   };
@@ -251,6 +261,9 @@ const RoomForm: React.FC = () => {
                   {...register("restrictions")}
                 />
               </li>
+              <div>
+                <MapDrawer onMapClick={getSelectedLocation} />
+              </div>
               <li className=" flex flex-col gap-2">
                 Address
                 <Input
@@ -272,7 +285,7 @@ const RoomForm: React.FC = () => {
                 >
                   Set loaction on map
                 </Button> */}
-                <MapDrawer onMapClick={getSelectedLocation} />
+
                 <div className="flex gap-6">
                   <li className=" flex flex-col gap-2">
                     Latitude
@@ -293,6 +306,15 @@ const RoomForm: React.FC = () => {
                     )}
                   </li>
                 </div>
+                <li className=" flex flex-col gap-2 mt-3">
+                  City
+                  <Input placeholder="lon" name="lon" {...register("city")} />
+                  {errors.city && (
+                    <p className="text-red-500 text-sm">
+                      {errors.city.message}
+                    </p>
+                  )}
+                </li>
               </div>
               <li className="flex flex-col gap-2">
                 <Label htmlFor="file" className="text-left">

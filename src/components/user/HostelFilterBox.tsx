@@ -7,18 +7,18 @@ import {
 } from "@/components/ui/dialog";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { TbListDetails } from "react-icons/tb";
-import Rooms from "@/constant/types/rooms";
 import { FC } from "react";
 import Location from "@/constant/types/location";
+import Hostel from "@/constant/types/Hostels";
 
 interface Props {
   open: boolean;
   onClose?: () => void;
-  items: Rooms[];
+  items: Hostel[];
   onItemClick: (coords: Location) => void;
 }
 
-const FilteredRoomsList: FC<Props> = ({ open, onClose, items, onItemClick }) => {
+const FilteredHostel: FC<Props> = ({ open, onClose, items, onItemClick }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -30,18 +30,18 @@ const FilteredRoomsList: FC<Props> = ({ open, onClose, items, onItemClick }) => 
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          {items.map((room) => {
+          {items.map((hostel) => {
             return (
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-bold text-xl">{room.address}</p>
-                  <p className="text-sm">Rooms : {room.noOfRooms}</p>
+                  <p className="font-bold text-xl">{hostel.address}</p>
+                  <p className="text-sm">Price : {hostel.price}</p>
                 </div>
                 <div className="flex gap-3">
                   <FaMapMarkedAlt
                     className="text-2xl cursor-pointer"
                     onClick={() => {
-                      onItemClick(room.coord);
+                      onItemClick(hostel.coord);
                     }}
                   />
                   <TbListDetails className="text-2xl cursor-pointer" />
@@ -55,4 +55,4 @@ const FilteredRoomsList: FC<Props> = ({ open, onClose, items, onItemClick }) => 
   );
 };
 
-export default FilteredRoomsList;
+export default FilteredHostel;

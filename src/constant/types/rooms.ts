@@ -18,6 +18,7 @@ interface Rooms {
   coord?: Location;
   img: string[];
   price: number;
+  city?: string;
 }
 
 export default Rooms;

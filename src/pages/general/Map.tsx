@@ -24,7 +24,11 @@ import Rooms from "@/constant/types/rooms";
 import RoomPopUp from "@/components/map/RoomPopUp";
 import Filter from "@/components/map/Filter";
 import apiKey from "@/constant/api";
-import FilteredItems from "@/components/user/FilteredBox";
+import FilteredRoomsList from "@/components/user/FilteredBox";
+import Hostel from "@/constant/types/Hostels";
+import FilteredHostel from "@/components/user/HostelFilterBox";
+import { useHostelContext } from "@/Provider/HostelContext";
+import HostelPopup from "@/components/map/HostelPopup";
 
 interface SelectedLocation {
   lat: number;
@@ -33,9 +37,12 @@ interface SelectedLocation {
 }
 
 const Map: React.FC = () => {
+  const [hostelOpen, setHostelOpen] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
-  const [allRooms, setRooms] = useState<Rooms[]>();
+  const [allRooms, setRooms] = useState<Rooms[]>([]);
+  const [allhostel, setHostels] = useState<Hostel[]>([]);
+  const { allHostels } = useHostelContext();
   const { ToastContainer, notify } = Alert();
   const [query, setQuery] = useState<string>("");
   const [searchLocation, setSearchLocation] = useState<Location>({
@@ -108,6 +115,15 @@ const Map: React.FC = () => {
     setFilterOpen(false);
   };
 
+  const onItemClickHostel = (coords: Location) => {
+    setHostelOpen(false);
+    setSearchLocation({
+      lat: coords.lat,
+      lon: coords.lon,
+    });
+    setFilterOpen(false);
+  };
+
   const { loading, rooms } = useRoomContext();
   if (loading) return <Loading />;
 
@@ -115,11 +131,19 @@ const Map: React.FC = () => {
     return (
       <div className="relative h-screen w-screen flex  justify-center">
         {allRooms && (
-          <FilteredItems
+          <FilteredRoomsList
             items={allRooms}
             onItemClick={onItemClick}
             open={open}
             onClose={() => setOpen(false)}
+          />
+        )}
+        {allhostel && (
+          <FilteredHostel
+            items={allhostel}
+            open={hostelOpen}
+            onItemClick={onItemClickHostel}
+            onClose={() => setHostelOpen(false)}
           />
         )}
         <div className="absolute z-10 flex flex-col">
@@ -141,6 +165,10 @@ const Map: React.FC = () => {
               setRooms(rooms);
             }
           }}
+          onFilterHostel={(hostels: Hostel[]) => {
+            setHostelOpen(true);
+            setHostels(hostels);
+          }}
         />
         <div
           className="bg-slate-900 h-16 w-16 cursor-pointer rounded-full absolute z-10 lg:bottom-24 lg:right-24 flex justify-center items-center bottom-12 right-6"
@@ -154,7 +182,7 @@ const Map: React.FC = () => {
               ? [userLocation.lat, userLocation.lon]
               : [searchLocation.lat, searchLocation.lon]
           }
-          zoom={13}
+          zoom={17}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -166,6 +194,9 @@ const Map: React.FC = () => {
           {rooms.map((room) => {
             return <RoomPopUp room={room} onRouting={handleRouting} />;
           })}
+          {allHostels.map((room) => {
+            return <HostelPopup room={room} onRouting={handleRouting} />;
+          })}
 
           <LocationUpdater
             location={{ lat: searchLocation.lat, lng: searchLocation.lon }}
@@ -176,6 +207,7 @@ const Map: React.FC = () => {
               end={{ lat: selectedLocation.lat, lng: selectedLocation.lon }}
             />
           )}
+          
         </MapContainer>
         <ToastContainer />
       </div>

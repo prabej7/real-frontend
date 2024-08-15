@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChangeEvent, useState } from "react";
+import apiKey from "@/constant/api";
+import Hostel from "@/constant/types/Hostels";
+import Location from "@/constant/types/location";
+import { useHostelContext } from "@/Provider/HostelContext";
+import axios from "axios";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface CheckBox {
   food: boolean;
@@ -20,7 +25,17 @@ interface CheckBox {
   postPayment: boolean;
 }
 
-const HostelForm: React.FC = () => {
+interface Props {
+  onFilter: (rooms: Hostel[]) => void;
+}
+
+const HostelForm: React.FC<Props> = ({ onFilter }) => {
+  const { allHostels } = useHostelContext();
+  const [locationSelect, setLocation] = useState<string>("Near me");
+  const [location, setUserLocation] = useState<Location>({
+    lat: 27.7172,
+    lon: 85.324,
+  });
   const [priceRange, setPriceRange] = useState({
     g: 0,
     l: 0,
@@ -42,9 +57,34 @@ const HostelForm: React.FC = () => {
     washroom: false,
     wifi: false,
   });
+
+  useEffect(() => {
+    if (navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+        },
+        (error) => {}
+      );
+    }
+  }, [navigator]);
+  const locationSelectHandle = async (e: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    if (value == "Near me") {
+      const { data } = await axios.get(
+        `https://api.geoapify.com/v1/geocode/reverse?lat=${location.lat}&lon=${location.lon}&apiKey=${apiKey}`
+      );
+      console.log(data);
+      setLocation(data.features[0].properties.city);
+    } else {
+      setLocation(value);
+    }
+  };
   const handlePrice = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
-    console.log(e);
     setPriceRange((prev) => ({
       ...prev,
       [name]: Number(value),
@@ -58,14 +98,38 @@ const HostelForm: React.FC = () => {
     }));
   };
   const handleSubmit = () => {
-    console.log({
-      ...selectedOptions,
-      ...priceRange,
+    const filteredHostel = allHostels.filter((hostel) => {
+      const meetsLocationCriteria =
+        hostel.city === locationSelect || locationSelect === "All";
+      const meetsPriceCriteria =
+        hostel.price >= priceRange.g && hostel.price <= priceRange.l;
+      const meetsOptionCriteria = Object.keys(selectedOptions).every((key) => {
+        if (selectedOptions[key as keyof CheckBox]) {
+          return hostel[key as keyof CheckBox];
+        }
+        return true;
+      });
+
+      return meetsLocationCriteria && meetsPriceCriteria && meetsOptionCriteria;
     });
+    console.log(filteredHostel);
+    if (filteredHostel.length > 0) {
+      onFilter(filteredHostel);
+    }
   };
 
   return (
     <div className="text-left">
+      <p className="font-medium mb-3">Location</p>
+      <div className="flex gap-3 mb-3">
+        <select
+          className="select select-bordered w-full max-w-xs"
+          onChange={locationSelectHandle}
+        >
+          <option selected>Near me</option>
+          <option>All</option>
+        </select>
+      </div>
       <p className="font-medium ">Price</p>
       <div className="flex gap-3">
         <div className="flex flex-col gap-3">
@@ -77,7 +141,7 @@ const HostelForm: React.FC = () => {
           <Input placeholder="eg. 20000" name="l" onChange={handlePrice} />
         </div>
       </div>
-      <div className="flex flex-col gap-3 mt-6 2xl:max-h-full max-h-64 xl:max-h-64 overflow-x-auto">
+      <div className="flex flex-col gap-3 mt-6 2xl:max-h-96 max-h-44 xl:max-h-40 overflow-x-auto">
         <p className="font-medium">Facilities</p>
         <li className="flex justify-between">
           Food

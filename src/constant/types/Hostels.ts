@@ -1,3 +1,5 @@
+import Location from "./location";
+
 interface Hostel {
   _id?: string;
   food?: boolean;
@@ -19,6 +21,7 @@ interface Hostel {
   address?: string;
   coord?: Location;
   price?: number;
+  city?: string;
 }
 
 export default Hostel;

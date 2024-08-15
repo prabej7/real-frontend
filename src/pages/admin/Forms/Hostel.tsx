@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MapDrawer from "@/components/ui/Map";
 import Location from "@/constant/types/location";
+import apiKey from "@/constant/api";
 const schema = z.object({
   address: z.string().min(1, {
     message: "Field is required.",
@@ -23,6 +24,9 @@ const schema = z.object({
     message: "Field is required.",
   }),
   price: z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number()),
+  city: z.string().min(1, {
+    message: "Field is required.",
+  }),
 });
 interface CheckBox {
   food: boolean;
@@ -151,10 +155,15 @@ const HostelForm: React.FC = () => {
     }));
   };
 
-  const getSelectedLocation = (location: Location) => {
-    const { lat, lon } = location;
-    setValue("lat", lat);
-    setValue("lon", lon);
+  const getSelectedLocation = async (location: Location) => {
+    const { data } = await axios.get(
+      `https://api.geoapify.com/v1/geocode/reverse?lat=${location.lat}&lon=${location.lon}&apiKey=${apiKey}`
+    );
+
+    setValue("city", data.features[0].properties.city);
+    setValue("address", data.features[0].properties.address_line1);
+    setValue("lat", location.lat);
+    setValue("lon", location.lon);
   };
 
   return (
@@ -239,7 +248,9 @@ const HostelForm: React.FC = () => {
                   checked={checkBox.postPayment}
                 />
               </li>
-              
+              <div>
+                <MapDrawer onMapClick={getSelectedLocation} />
+              </div>
               <li className=" flex flex-col gap-2">
                 Address
                 <Input
@@ -248,9 +259,7 @@ const HostelForm: React.FC = () => {
                   {...register("address")}
                 />
               </li>
-              <div>
-                <MapDrawer onMapClick={getSelectedLocation} />
-              </div>
+
               <li className=" flex flex-col gap-2">
                 Latitude
                 <Input placeholder="Lat" name="lat" {...register("lat")} />
@@ -263,6 +272,13 @@ const HostelForm: React.FC = () => {
                 <Input placeholder="lon" name="lon" {...register("lon")} />
                 {errors.lon && (
                   <p className="text-red-500 text-sm">{errors.lon.message}</p>
+                )}
+              </li>
+              <li className=" flex flex-col gap-2 mt-3">
+                City
+                <Input placeholder="lon" name="lon" {...register("city")} />
+                {errors.city && (
+                  <p className="text-red-500 text-sm">{errors.city.message}</p>
                 )}
               </li>
               <li className="flex flex-col gap-2">
