@@ -10,6 +10,7 @@ import { TbListDetails } from "react-icons/tb";
 import Rooms from "@/constant/types/rooms";
 import { FC } from "react";
 import Location from "@/constant/types/location";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -18,7 +19,13 @@ interface Props {
   onItemClick: (coords: Location) => void;
 }
 
-const FilteredRoomsList: FC<Props> = ({ open, onClose, items, onItemClick }) => {
+const FilteredRoomsList: FC<Props> = ({
+  open,
+  onClose,
+  items,
+  onItemClick,
+}) => {
+  const navigate = useNavigate();
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -44,7 +51,12 @@ const FilteredRoomsList: FC<Props> = ({ open, onClose, items, onItemClick }) => 
                       onItemClick(room.coord);
                     }}
                   />
-                  <TbListDetails className="text-2xl cursor-pointer" />
+                  <TbListDetails
+                    className="text-2xl cursor-pointer"
+                    onClick={() => {
+                      navigate(`/rooms/${room._id}`);
+                    }}
+                  />
                 </div>
               </div>
             );

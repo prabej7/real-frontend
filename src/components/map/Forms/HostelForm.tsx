@@ -112,7 +112,7 @@ const HostelForm: React.FC<Props> = ({ onFilter }) => {
 
       return meetsLocationCriteria && meetsPriceCriteria && meetsOptionCriteria;
     });
-    console.log(filteredHostel);
+
     if (filteredHostel.length > 0) {
       onFilter(filteredHostel);
     }

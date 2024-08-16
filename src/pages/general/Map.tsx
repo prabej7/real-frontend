@@ -29,6 +29,7 @@ import Hostel from "@/constant/types/Hostels";
 import FilteredHostel from "@/components/user/HostelFilterBox";
 import { useHostelContext } from "@/Provider/HostelContext";
 import HostelPopup from "@/components/map/HostelPopup";
+import { useLocation } from "react-router-dom";
 
 interface SelectedLocation {
   lat: number;
@@ -56,6 +57,12 @@ const Map: React.FC = () => {
 
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state) {
+      setSearchLocation(location.state);
+    }
+  }, [location]);
 
   useEffect(() => {
     if (navigator) {
@@ -65,10 +72,12 @@ const Map: React.FC = () => {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
           });
-          setSearchLocation({
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          });
+          if (!location.state) {
+            setSearchLocation({
+              lat: position.coords.latitude,
+              lon: position.coords.longitude,
+            });
+          }
         },
         (error) => {}
       );
@@ -207,7 +216,6 @@ const Map: React.FC = () => {
               end={{ lat: selectedLocation.lat, lng: selectedLocation.lon }}
             />
           )}
-          
         </MapContainer>
         <ToastContainer />
       </div>

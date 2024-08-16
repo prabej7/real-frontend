@@ -107,9 +107,13 @@ const RoomForm: React.FC<Props> = ({ onFilter }) => {
     });
 
     if (filteredRooms.length > 0) {
-      onFilter(filteredRooms);
+      return onFilter(filteredRooms);
     } else {
-      notify.info("No Rooms Found!");
+      try {
+        return notify.info("No Rooms Found!");
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 

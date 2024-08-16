@@ -10,6 +10,7 @@ import { TbListDetails } from "react-icons/tb";
 import { FC } from "react";
 import Location from "@/constant/types/location";
 import Hostel from "@/constant/types/Hostels";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 const FilteredHostel: FC<Props> = ({ open, onClose, items, onItemClick }) => {
+  const navigate = useNavigate();
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -44,7 +46,10 @@ const FilteredHostel: FC<Props> = ({ open, onClose, items, onItemClick }) => {
                       onItemClick(hostel.coord);
                     }}
                   />
-                  <TbListDetails className="text-2xl cursor-pointer" />
+                  <TbListDetails
+                    className="text-2xl cursor-pointer"
+                    onClick={() => navigate(`/hostels/${hostel._id}`)}
+                  />
                 </div>
               </div>
             );

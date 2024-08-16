@@ -26,8 +26,7 @@ const DesktopSection: React.FC<Props> = ({
   isNav,
   route,
 }) => {
-  const [isShow, setShow] = useState<boolean>(true);
-  const [cookie, setCookie, removeCookie] = useCookies(["token"]);
+  const [cookie, _, removeCookie] = useCookies(["token"]);
 
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -37,11 +36,7 @@ const DesktopSection: React.FC<Props> = ({
     }
     return navigate("/login");
   };
-  useEffect(() => {
-    if (cookie && !cookie.token) {
-      navigate("/login");
-    }
-  }, [cookie]);
+
   return (
     <>
       <div className="h-screen w-screen flex text-white">

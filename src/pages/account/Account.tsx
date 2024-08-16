@@ -19,11 +19,24 @@ import Land from "./Display/Land";
 import SearchDisplay from "@/components/ui/SearchDisplay";
 import UpdateProfile from "@/components/ui/UpdateProfileHome";
 import { useUserContext } from "@/Provider/UserContext";
+import Filter from "@/components/map/Filter";
+import R from "@/constant/types/rooms";
+import H from "@/constant/types/Hostels";
+import FilteredRoomsList from "@/components/user/FilteredBox";
+import Location from "@/constant/types/location";
+import FilteredHostel from "@/components/user/HostelFilterBox";
+import { useNavigate } from "react-router-dom";
 const Account: React.FC = () => {
+  const [filterOpen, setFilterOpen] = useState<boolean>(false);
+  const [filterRoom, setFilterRoom] = useState<R[]>([]);
+  const [filterHostel, setFilteredHostel] = useState<H[]>([]);
+  const [roomFilterBoxOpen, setRoomFilterBoxOpen] = useState<boolean>(false);
+  const [hostelFilterBoxOpen, setHostelFilterBoxOpen] =
+    useState<boolean>(false);
   const [selected, setSelected] = useState<string>("Rooms");
   const { user, error, loading } = useUserContext();
   const [query, setQuery] = useState<string>("");
-  const [cookie] = useCookies(["token"]);
+  const navigate = useNavigate();
   useAuth("account");
   if (loading) return <Loading />;
   if (!user.verified) return <Verify />;
@@ -34,9 +47,48 @@ const Account: React.FC = () => {
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelected(e.target.value);
   };
+
+  const onRoomFilter = (rooms: R[]) => {
+    if (rooms.length > 0) {
+      setRoomFilterBoxOpen(true);
+      setFilterRoom(rooms);
+    }
+  };
+
+  const onHostelFilter = (hostels: H[]) => {
+    if (hostels.length > 0) {
+      setFilteredHostel(hostels);
+    }
+  };
+
+  const handleMapClick = (coords: Location) => {
+    navigate("/map", { state: coords });
+  };
+
   if (!loading)
     return (
       <div className="section flex overflow-x-clip">
+        <FilteredRoomsList
+          open={roomFilterBoxOpen}
+          items={filterRoom}
+          onItemClick={handleMapClick}
+          onClose={() => setRoomFilterBoxOpen(!roomFilterBoxOpen)}
+        />
+        <FilteredHostel
+          items={filterHostel}
+          open={hostelFilterBoxOpen}
+          onClose={() => setHostelFilterBoxOpen(!hostelFilterBoxOpen)}
+          onItemClick={handleMapClick}
+        />
+        <div className="relative mt-6">
+          <Filter
+            onFilter={onRoomFilter}
+            onFilterHostel={onHostelFilter}
+            open={filterOpen}
+            onClose={() => setFilterOpen(!filterOpen)}
+          />
+        </div>
+
         <MobileNav title="Dashboard">
           <p className="text-center mt-6 font-medium">
             What are you looking for?
@@ -61,7 +113,7 @@ const Account: React.FC = () => {
           </div>
           <div className="h-auto overflow-y-auto">
             <div className="pt-12">
-              {selected == "Rooms" && <Rooms />}
+              {selected == "Rooms" && <Rooms filteredRooms={filterRoom} />}
               {selected == "Hostels" && <Hostel />}
               {selected == "Lands" && <Land />}
             </div>

@@ -31,6 +31,7 @@ const Hostel: React.FC = () => {
                 img={hostel.img[0]}
                 description={hostel.address}
                 id={hostel._id}
+                coord={hostel.coord}
               />
             );
           })}
