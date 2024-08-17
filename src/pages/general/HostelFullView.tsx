@@ -5,11 +5,14 @@ import Loading from "@/components/ui/Loading";
 import { MobileNav } from "@/components/ui/sideBar";
 import Hostel from "@/constant/types/Hostels";
 import { useHostelContext } from "@/Provider/HostelContext";
+import { useUserContext } from "@/Provider/UserContext";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const HostelFullView: React.FC = () => {
   const { allHostels, error, loading } = useHostelContext();
+  const navigate = useNavigate();
+  const { user } = useUserContext();
   const [hostel, setHostel] = useState<Hostel>();
   const { id } = useParams();
   useEffect(() => {
@@ -18,7 +21,11 @@ const HostelFullView: React.FC = () => {
   }, [loading]);
   if (loading) return <div></div>;
   if (error) return <div>Error</div>;
-
+  const handleBooking = () => {
+    try {
+      navigate(`/account/messages/${user?.messageId}`, { state: hostel });
+    } catch (e) {}
+  };
   if (hostel && hostel.address.length > 0)
     return (
       <>
@@ -57,7 +64,9 @@ const HostelFullView: React.FC = () => {
                 </ul>
               </div>
             </div>
-            <Button className="mb-12 w-[340px]">Book Now!</Button>
+            <Button className="mb-12 w-[340px]" onClick={handleBooking}>
+              Book Now!
+            </Button>
           </MobileNav>
           <DesktopSection>
             <div className="flex justify-center items-center w-screen pr-32">
@@ -92,7 +101,12 @@ const HostelFullView: React.FC = () => {
                     {hostel.wifi && <li>Wi-fi </li>}
                   </ul>
                 </div>
-                <Button className="mb-12 w-[470px]">Book Now!</Button>
+                <Button
+                  className="mb-12 w-[470px]"
+                  onClick={handleBooking}
+                >
+                  Book Now!
+                </Button>
               </div>
             </div>
           </DesktopSection>

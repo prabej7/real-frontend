@@ -1,11 +1,11 @@
 import DesktopSection from "@/components/ui/DesktopSection";
 import { MobileNav } from "@/components/ui/sideBar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import "../../App.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/Provider/UserContext";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import url from "@/constant/url";
 import { useCookies } from "react-cookie";
@@ -23,33 +23,25 @@ const Chat: React.FC = () => {
 
   const [cookie] = useCookies(["token"]);
   const [sending, setSending] = useState<boolean>(false);
-  // const [socket, setSocket] = useState<Socket | null>(null);
-  // const createSocket = useCallback(() => {
-  //   const socket = io(`${url}`, {
-  //     query: {
-  //       token: cookie.token,
-  //     },
-  //   });
-  //   return socket;
-  // }, [cookie.token]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  useEffect(() => {
+    if (state && state._id) {
+      const message = `Hi, I am looking for this ${
+        state.noOfRooms ? "room" : "hostel"
+      }: ${window.location.origin}/rooms/${state._id}`;
+      setText(message);
+
+      // Clear state by navigating to the same page without state
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [state, navigate]);
+
   const [text, setText] = useState<string>("");
   const { chatid } = useParams();
   const { error, loading, user } = useUserContext();
-  // useEffect(() => {
-  //   const s = createSocket();
-  //   setSocket(s);
-  //   return () => {
-  //     if (s) s.disconnect();
-  //   };
-  // }, [createSocket]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("receive-message", (data) => {
-  //       setMessage((prev) => [...prev, data]);
-  //     });
-  //   }
-  // }, [socket]);
   useEffect(() => {
     if (user && user.email.length > 0) {
       setMessage(user.messages.messages);
@@ -79,13 +71,6 @@ const Chat: React.FC = () => {
       setText("");
       setSending(false);
     }
-
-    // socket.emit("send-message", {
-    //   messageBoxId: user.messageId,
-    //   text: text,
-    //   role: "user",
-    //   user: cookie.token,
-    // });
   };
 
   return (
@@ -120,6 +105,7 @@ const Chat: React.FC = () => {
                   placeholder="Message"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
+                  ref={inputRef}
                 />
                 <Button
                   disabled={text.length == 0 || sending}
@@ -161,6 +147,7 @@ const Chat: React.FC = () => {
                   placeholder="Message"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
+                  ref={inputRef}
                 />
                 <Button
                   disabled={text.length == 0 || sending}

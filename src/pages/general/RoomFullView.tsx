@@ -3,8 +3,10 @@ import DesktopSection from "@/components/ui/DesktopSection";
 import Galery from "@/components/ui/Galery";
 import Loading from "@/components/ui/Loading";
 import { MobileNav } from "@/components/ui/sideBar";
+import Rooms from "@/constant/types/rooms";
 import url from "@/constant/url";
 import { useRoomContext } from "@/Provider/RoomsContext";
+import { useUserContext } from "@/Provider/UserContext";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,22 +17,17 @@ const RoomFullView: React.FC = () => {
     success: (text: string) => toast.success(text),
     error: (text: string) => toast.error(text),
   };
+  const { user } = useUserContext();
   const { id } = useParams();
-  const [cookie] = useCookies(["token"]);
   const { rooms, loading } = useRoomContext();
   const navigate = useNavigate();
   const handleClick = async (id: string) => {
-    const formData = {
-      token: cookie.token,
-      id: id,
-    };
     try {
-      const { status } = await axios.post(`${url}book-room`, formData);
-      if (status == 200) {
-        notify.success("Successfully Booked!");
-        navigate("/account/messages");
-      }
-    } catch (e) {}
+      const selectedRoom: Rooms = rooms.find((room) => (room._id = id));
+      navigate(`/account/messages/${user?.messageId}`, { state: selectedRoom });
+    } catch (e) {
+      notify.error("Something went wrong!");
+    }
   };
   if (loading) return <Loading />;
   if (rooms) {
@@ -118,7 +115,12 @@ const RoomFullView: React.FC = () => {
                   )}
                 </ul>
               </div>
-              <Button className="mb-12 w-[470px]">Book Now!</Button>
+              <Button
+                className="mb-12 w-[470px]"
+                onClick={() => handleClick(room._id)}
+              >
+                Book Now!
+              </Button>
             </div>
           </div>
         </div>
