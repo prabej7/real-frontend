@@ -1,5 +1,5 @@
 const Land: React.FC = () => {
-  return <>Land</>;
+  return <></>;
 };
 
 export default Land;

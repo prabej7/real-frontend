@@ -3,6 +3,7 @@ import { ChangeEvent, useState } from "react";
 import Rooms from "./Dashboard/Rooms";
 import Hostels from "./Dashboard/Hostels";
 import useAdminAuth from "@/hooks/useAdminAuth";
+import Lands from "./Dashboard/Lands";
 
 const Admin: React.FC = () => {
   useAdminAuth();
@@ -28,6 +29,7 @@ const Admin: React.FC = () => {
             <div className="mt-6">
               {selected === "Rooms" && <Rooms />}
               {selected === "Hostels" && <Hostels />}
+              {selected === "Lands" && <Lands />}
             </div>
           </div>
         </div>

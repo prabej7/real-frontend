@@ -8,6 +8,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/Hostel";
 import useAdminAuth from "@/hooks/useAdminAuth";
+import LandForm from "./Forms/LandForm";
 interface CheckBox {
   flat: boolean;
   waterFacility: boolean;
@@ -29,10 +30,6 @@ interface CheckBox {
 const AdminAdd: React.FC = () => {
   useAdminAuth();
   const [selected, setSelected] = useState<string>("room");
-
-  const LandForm: React.FC = () => {
-    return <>Land</>;
-  };
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
