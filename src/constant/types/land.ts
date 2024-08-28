@@ -1,3 +1,5 @@
+import Location from "./location";
+
 interface Land {
   _id: string;
   size?: string;
@@ -8,10 +10,7 @@ interface Land {
   roadSize?: string;
   distance?: string;
   img?: string[];
-  coord?: {
-    lat?: number;
-    lon?: number;
-  };
+  coord?: Location;
   price?: number;
   address?: string;
   city?: string;

@@ -30,6 +30,10 @@ import FilteredHostel from "@/components/user/HostelFilterBox";
 import { useHostelContext } from "@/Provider/HostelContext";
 import HostelPopup from "@/components/map/HostelPopup";
 import { useLocation } from "react-router-dom";
+import { useLands } from "@/Provider/LandContext";
+import LandPopup from "@/components/map/LandPopup";
+import Land from "@/constant/types/land";
+import FilteredLandList from "@/components/user/FilteredLandList";
 
 interface SelectedLocation {
   lat: number;
@@ -40,12 +44,17 @@ interface SelectedLocation {
 const Map: React.FC = () => {
   const [hostelOpen, setHostelOpen] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [landOpen, setLandOpen] = useState<boolean>(false);
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
   const [allRooms, setRooms] = useState<Rooms[]>([]);
   const [allhostel, setHostels] = useState<Hostel[]>([]);
+  const [allLands, setLands] = useState<Land[]>([]);
   const { allHostels } = useHostelContext();
   const { ToastContainer, notify } = Alert();
   const [query, setQuery] = useState<string>("");
+
+  const { lands, isLoading } = useLands();
+
   const [searchLocation, setSearchLocation] = useState<Location>({
     lat: 27.7172,
     lon: 85.324,
@@ -133,7 +142,14 @@ const Map: React.FC = () => {
     setFilterOpen(false);
   };
 
+  const onLandClick = (coords: Location) => {
+    setLandOpen(false);
+    setSearchLocation(coords);
+    setFilterOpen(false);
+  };
+
   const { loading, rooms } = useRoomContext();
+
   if (loading) return <Loading />;
 
   if (rooms instanceof Array)
@@ -155,6 +171,16 @@ const Map: React.FC = () => {
             onClose={() => setHostelOpen(false)}
           />
         )}
+
+        {allLands && (
+          <FilteredLandList
+            items={lands}
+            open={landOpen}
+            onItemClick={onLandClick}
+            onClose={() => setLandOpen(false)}
+          />
+        )}
+
         <div className="absolute z-10 flex flex-col">
           <div className="w-screen flex gap-3 sm:px-[500px] 2xl:px-[700px] pt-6 px-12">
             <Input
@@ -178,6 +204,10 @@ const Map: React.FC = () => {
             setHostelOpen(true);
             setHostels(hostels);
           }}
+          onFilterLand={(lands: Land[]) => {
+            setLands(lands);
+            setLandOpen(true);
+          }}
         />
         <div
           className="bg-slate-900 h-16 w-16 cursor-pointer rounded-full absolute z-10 lg:bottom-24 lg:right-24 flex justify-center items-center bottom-12 right-6"
@@ -200,11 +230,17 @@ const Map: React.FC = () => {
           <Marker position={[userLocation.lat, userLocation.lon]}>
             <Popup>You</Popup>
           </Marker>
+
           {rooms.map((room) => {
             return <RoomPopUp room={room} onRouting={handleRouting} />;
           })}
+
           {allHostels.map((room) => {
             return <HostelPopup room={room} onRouting={handleRouting} />;
+          })}
+
+          {lands.map((land) => {
+            return <LandPopup land={land} onRouting={handleRouting} />;
           })}
 
           <LocationUpdater

@@ -13,10 +13,13 @@ import RoomForm from "./Forms/Room";
 import HostelForm from "./Forms/HostelForm";
 import Rooms from "@/constant/types/rooms";
 import Hostel from "@/constant/types/Hostels";
+import Land from "@/constant/types/land";
+import LandForm from "./Forms/LandForm";
 
 interface Props {
   onFilter: (rooms: Rooms[]) => void;
-  onFilterHostel: (hostel: Hostel[]) => void;
+  onFilterHostel?: (hostel: Hostel[]) => void;
+  onFilterLand?: (land: Land[]) => void;
   onClose?: () => void;
   open?: boolean;
 }
@@ -26,6 +29,7 @@ const Filter: React.FC<Props> = ({
   onClose,
   open,
   onFilterHostel,
+  onFilterLand,
 }) => {
   const [selected, setSelected] = useState<string>("Room");
 
@@ -65,6 +69,9 @@ const Filter: React.FC<Props> = ({
                   <HostelForm
                     onFilter={(hostel: Hostel[]) => onFilterHostel(hostel)}
                   />
+                )}
+                {selected == "Land" && (
+                  <LandForm onFilter={(land: Land[]) => onFilterLand(land)} />
                 )}
               </div>
             </div>
